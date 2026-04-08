@@ -1,4 +1,4 @@
-import * as parliamentarch from '../node_modules/parliamentarch/dist/index.js';
+import * as parliamentarch from './parliamentarch/index.js';
 
 async function loadSenateData() {
     const seatsResponse = await fetch('../information/senate.json');
