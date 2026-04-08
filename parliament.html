@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parliament</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="year-container">
+        <span style="font-size:xx-large; color:lightgray; margin-left: 7px;"><span id="year"></span></span>
+        <span style="font-size:large; color:rgb(167, 167, 167); margin-left: 4px; margin-top: 10px;"><span id="turn"></span></span>
+        <span style="font-size:xx-large; color:rgb(155, 155, 155); margin-left:12px; margin-right:12px;">|</span>
+        <span style="font-size:large; color:rgb(167, 167, 167); margin-left: 4px; margin-top: 4px;">👑</span>
+        <span style="font-size:xx-large; color:rgb(155, 155, 155); margin-left:12px; margin-right:12px;">|</span>
+        <span style="font-size:small; color:lightgray; margin-left: 4px; margin-top:4px">Emperor, Karl IV<br>Empress, Ashley</span>
+        <span style="font-size:xx-large; color:rgb(155, 155, 155); margin-left:12px; margin-right:12px;">|</span>
+        <span style="font-size:small; color:lightgray; margin-left: 4px; margin-top:4px">Prime Minister,<br>Her Majesty Ashley Moadstein</span>
+    </div>
+    <div class="tab-container">
+        <a href="index.html" class="button-link">Home</a>
+        <a href="parliament.html" class="button-link active">Parliament</a>
+        <a href="region-map.html" class="button-link">The Empire</a>
+        <a href="elections.html" class="button-link">Elections</a>
+        <a href="royal-tree.html" class="button-link">Royal Family</a>
+        <a href="world-map.html" class="button-link">World Map</a>
+    </div>
+    <div class="page">
+        <div class="element-container" style="margin-top: 40px;">
+            <span style="font-family:Faculty Glyphic">Bailech Legislature - <span id="year"></span></span>
+            <div class="layout">
+                <div class="layout-column">
+                    <div style="background-color:rgb(53, 48, 48); margin-top:12px; border-radius:10px;">
+                    <div id="parliament-container"></div>
+                    <script type="module" src="scripts/parliament.js"></script>
+                    <div id="senate-container" style="transform: scale(0.7); transform-origin: top center;"></div>
+                    <script type="module" src="scripts/senate.js"></script>
+                    </div>
+                </div>
+                <div id="right-panel" class="element-container" style="width:50%">
+                    <h1 style="font-family:Faculty Glyphic;">Imperial Parliament</h1>
+                    <p style="font-family:Viaoda Libre;">Established: 1747<br>Districts: 391</p>
+                    <div class="element-container">
+                        <p style="font-family:Faculy Glyphic;">Ruling Party</p>
+                        <div class="party">
+                            <img class="party-icon" src="images/parties/MPB.png" alt="MPB" />
+                            <p style="font-family:Viaoda Libre;">66/391 - Monarchist Party</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script type="module">
+    import { gameDetails } from './scripts/game_details.js';
+    const yearElements = document.querySelectorAll('#year');
+    yearElements.forEach(el => el.textContent = gameDetails.year);
+
+    const turnElements = document.querySelectorAll('#turn');
+    turnElements.forEach(el => el.textContent = gameDetails.turn);
+</script>
+</html>
