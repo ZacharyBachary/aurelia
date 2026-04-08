@@ -1,10 +1,10 @@
 import * as parliamentarch from './parliamentarch/index.js';
 
 async function loadParliamentData() {
-    const seatsResponse = await fetch('../information/parliament.json');
+    const seatsResponse = await fetch('./information/parliament.json');
     const seats = await seatsResponse.json();
 
-    const partiesResponse = await fetch('../information/parties.json');
+    const partiesResponse = await fetch('./information/parties.json');
     const parties = await partiesResponse.json();
 
     const attribution = new Map();
