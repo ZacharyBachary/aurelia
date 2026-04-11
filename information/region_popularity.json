@@ -1,0 +1,6 @@
+{
+  "jhallic":       { "TSAR": 10, "MPB": 50, "LDP":  5, "PM":  8, "WF": 12, "BRP":  3, "UNFB":  7, "HLP":  2, "AP":  4 },
+  "oberhause":     { "TSAR": 40, "MPB": 15, "LDP": 20, "PM": 10, "WF":  8, "BRP":  5, "UNFB":  6, "HLP":  3, "AP":  2 },
+  "bailectein":    { "TSAR":  8, "MPB": 12, "LDP": 20, "PM": 30, "WF": 10, "BRP": 15, "UNFB":  5, "HLP":  4, "AP":  6 },
+  "upper-fohemia": { "TSAR": 25, "MPB":  5, "LDP": 10, "PM":  5, "WF": 20, "BRP":  8, "UNFB": 12, "HLP":  6, "AP":  3 }
+}
