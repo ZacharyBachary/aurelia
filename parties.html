@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home</title>
+    <title>World Map</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -18,24 +18,26 @@
         <span style="font-size:small; color:lightgray; margin-left: 4px; margin-top:4px">Prime Minister,<br>Her Majesty Ashley Moadstein</span>
     </div>
     <div class="tab-container">
-        <a href="index.html" class="button-link active">Home</a>
+        <a href="index.html" class="button-link">Home</a>
         <a href="parliament.html" class="button-link">Parliament</a>
         <a href="region-map.html" class="button-link">The Empire</a>
         <a href="elections.html" class="button-link">Elections</a>
-        <a href="parties.html" class="button-link">Parties</a>
+        <a href="parties.html" class="button-link active">Parties</a>
         <a href="royal-tree.html" class="button-link">Royal Family</a>
         <a href="world-map.html" class="button-link">World Map</a>
     </div>
-    <div class="grid-container">
-        <div class="left-panel">Hi 1</div>
-        <div class="middle-break"></div>
-        <div class="right-panel">
-            <h1>News</h1>
-            Here I'll post any news and updates on Aurelia!
-            <br>
-            <h2>Launch Date</h2>
-            <b>Aurelia Season 4 Launches on TBD</b>
+    <div class="page" style="width:100%;">
+        <div class="element-container" style="margin-top: 40px; overflow:auto;">
+            <div style="margin-bottom: 16px; display: flex; gap: 16px; flex-wrap: wrap; align-items: center;">
+                <label style="color: lightgray;">Jhallic: <input type="color" id="color-jhallic" value="#fff"></label>
+                <label style="color: lightgray;">Oberhause: <input type="color" id="color-oberhause" value="#da5655"></label>
+                <label style="color: lightgray;">Bailectein: <input type="color" id="color-bailectein" value="#bada55"></label>
+                <label style="color: lightgray;">Upper Fohemia: <input type="color" id="color-upper-fohemia" value="#55da82"></label>
+            </div>
+            <div id="region-map-container" style="width: 100%; height: auto;"></div>
         </div>
+    </div>
+    <div class="footer">
     </div>
 </body>
 <script type="module">
@@ -45,5 +47,21 @@
 
     const turnElements = document.querySelectorAll('#turn');
     turnElements.forEach(el => el.textContent = gameDetails.turn);
+
+    const resp = await fetch('images/maps/region_map.svg');
+    const svgText = await resp.text();
+    const container = document.getElementById('region-map-container');
+    container.innerHTML = svgText;
+
+    const regions = ['jhallic', 'oberhause', 'bailectein', 'upper-fohemia'];
+    regions.forEach(id => {
+        const picker = document.getElementById('color-' + id);
+        const polygon = document.getElementById(id);
+        if (picker && polygon) {
+            picker.addEventListener('input', () => {
+                polygon.style.fill = picker.value;
+            });
+        }
+    });
 </script>
 </html>
