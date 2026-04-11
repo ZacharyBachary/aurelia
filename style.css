@@ -20,6 +20,8 @@ body {
     background: linear-gradient(to bottom right, rgb(168, 168, 168), rgb(110, 110, 110));
     background-repeat: no-repeat;
     background-attachment: fixed;
+    display: flex;
+    flex-direction: column;
 }
 .page {
     max-width: 1000px;
@@ -32,7 +34,7 @@ body {
 .grid-container {
     display: grid;
     grid-template-columns: 1fr 3px 400px;
-    height:100vh;
+    flex: 1 0 auto;
 }
 .left-panel { padding:15px; }
 .middle-break { background-color:#00000066}
@@ -107,14 +109,48 @@ body {
     margin: 1px;
 }
 
+.col-container {
+    border: solid rgb(78, 78, 78) 1px;
+    border-radius: 10px;
+    background-color: rgb(117, 117, 117);
+    padding: 12px 15px;
+    box-shadow: 0 0 50px rgba(102, 102, 102, 0.8);
+}
+
+.col-container h1,
+.col-container h2,
+.col-container h3,
+.col-container p,
+.col-container span {
+    margin: 1px;
+}
+
+.party-container {
+    border: solid rgb(78, 78, 78) 2px;
+    border-radius: 5px;
+    background-color: rgb(141, 141, 141);
+    padding: 12px 15px;
+    box-shadow: 0 0 50px rgba(102, 102, 102, 0.8);
+}
+
+.party-container h1,
+.party-container h2,
+.party-container h3,
+.party-container p,
+.party-container span {
+    margin: 1px;
+}
+
 #parliament-container svg text {
     font-family: 'Faculty Glyphic', sans-serif !important;
-    opacity:0;
+    color:white;
+    opacity:1;
 }
 
 #senate-container svg text {
     font-family: 'Faculty Glyphic', sans-serif !important;
-    opacity:0;
+    opacity:1;
+    color:white;
 }
 
 .layout {
@@ -130,8 +166,43 @@ body {
     border:1px solid rgb(194, 194, 194);
     float:left;
 }
+.col-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 20%;
+    border:2px solid rgb(194, 194, 194);
+    float:left;
+    box-shadow: 0 0 5px black;
+    margin-right: 5px;
+}
 .party {
     align-items: center;
     display:flex;
     gap:2px;
+}
+.gallery {
+    display: flex;
+    justify-content: space-around;
+    gap: 12px;
+    width:100%;
+    margin: 0 auto;
+    margin-top:30px;
+}
+.gallery img {
+    max-width: 500px;
+    max-height: 300px;
+}
+.gallery-row {
+    flex:1;
+    text-align:center;
+    background-color:#757575;
+    border-radius: 10px;
+    padding-top:15px;
+}
+.footer {
+    background-color: #757575;
+    margin-top: auto;
+    padding: 50px;
+    width: 100%;
+    border-top: rgb(70, 70, 70) 1px solid;
 }

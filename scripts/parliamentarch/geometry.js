@@ -74,7 +74,8 @@ export var FillingStrategy;
 export function getSeatsCenters(nSeats, { minNRows = 0, fillingStrategy = FillingStrategy.DEFAULT, spanAngle = DEFAULT_SPAN_ANGLE, } = {}) {
     const nRows = Math.max(minNRows, getNRowsFromNSeats(nSeats, spanAngle));
     const rowThicc = getRowThickness(nRows);
-    const spanAngleMargin = (1 - spanAngle / 180) * Math.PI / 2;
+    const spanAngleMargin = (1 - spanAngle / 180
+    ) * Math.PI / 2;
     const maxedRows = getRowsFromNRows(nRows, spanAngle);
     let startingRow, fillingRatio, seatsOnStartingRow;
     switch (fillingStrategy) {

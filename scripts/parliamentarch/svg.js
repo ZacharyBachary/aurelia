@@ -73,7 +73,7 @@ function addNumberOfSeats(svg, nSeats, x, y, fontSize) {
     const text = svg.appendChild(document.createElementNS(SVG_NS, "text"));
     text.setAttribute("x", x.toString());
     text.setAttribute("y", y.toString());
-    text.setAttribute("style", `font-size: ${fontSize}px; font-weight: bold; text-align: center; text-anchor: middle; font-family: sans-serif;`);
+    text.setAttribute("style", `font-size: ${fontSize}px; font-weight: bold; text-align: center; text-anchor: middle; font-family: sans-serif; fill: white;`);
     text.textContent = nSeats.toString();
 }
 function addGroupedSeats(svg, seatCentersByGroup, seatActualRadius, canvasSize, leftMargin, topMargin) {
