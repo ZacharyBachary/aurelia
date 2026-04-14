@@ -5,6 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Region Map</title>
     <link rel="stylesheet" href="style.css">
+    <!-- Leaflet -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <style>
+        #map { width: 100%; height: 600px; background: #2a2a2a; border-radius: 8px; }
+    </style>
 </head>
 <body>
     <div class="year-container">
@@ -26,8 +32,12 @@
         <a href="royal-tree.html" class="button-link">Royal Family</a>
         <a href="world-map.html" class="button-link">World Map</a>
     </div>
+    <div class="bailech-pattern"></div>
     <div class="page">
-        Region Map
+        <div class="element-container">
+            <span style="font-family:Faculty Glyphic">Regional Map of the Bailech Empire - <span id="year"></span></span>
+            <div id="map" style="margin-top:24px;"></div>
+        </div>
     </div>
     <div class="footer">
     </div>
@@ -39,5 +49,36 @@
 
     const turnElements = document.querySelectorAll('#turn');
     turnElements.forEach(el => el.textContent = gameDetails.turn);
+
+    const IMG_W = 1087;
+    const IMG_H = 1340;
+
+    window.addEventListener('load', () => {
+        const map = L.map('map', {
+            crs: L.CRS.Simple,
+            minZoom: -2,
+            maxZoom:  4,
+            zoomSnap: 0.25,
+        });
+
+        const bounds = [[0, 0], [IMG_H, IMG_W]];
+
+        const layerBase    = L.imageOverlay('images/maps/region_map_base.png',    bounds);
+        const layerTerrain = L.imageOverlay('images/maps/region_map_terrain.png', bounds);
+        const layerDetails = L.imageOverlay('images/maps/region_map_details.png', bounds);
+        const layerText    = L.imageOverlay('images/maps/region_map_text.png',    bounds);
+
+        layerBase.addTo(map);
+        layerTerrain.addTo(map);
+        layerDetails.addTo(map);
+        layerText.addTo(map);
+        map.fitBounds(bounds);
+
+        L.control.layers(null, {
+            'Terrain':       layerTerrain,
+            'Cities':       layerDetails,
+            'Labels & Information': layerText,
+        }, { collapsed: false }).addTo(map);
+    });
 </script>
 </html>

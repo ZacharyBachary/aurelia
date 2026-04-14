@@ -2,5 +2,19 @@
   "jhallic":       { "TSAR": 10, "MPB": 50, "LDP":  5, "PM":  8, "WF": 12, "BRP":  3, "UNFB":  7, "HLP":  2, "AP":  4 },
   "oberhause":     { "TSAR": 40, "MPB": 15, "LDP": 20, "PM": 10, "WF":  8, "BRP":  5, "UNFB":  6, "HLP":  3, "AP":  2 },
   "bailectein":    { "TSAR":  8, "MPB": 12, "LDP": 20, "PM": 30, "WF": 10, "BRP": 15, "UNFB":  5, "HLP":  4, "AP":  6 },
-  "upper-fohemia": { "TSAR": 25, "MPB":  5, "LDP": 10, "PM":  5, "WF": 20, "BRP":  8, "UNFB": 12, "HLP":  6, "AP":  3 }
+  "upper-fohemia": { "TSAR": 25, "MPB":  5, "LDP": 10, "PM":  5, "WF": 20, "BRP":  8, "UNFB": 12, "HLP":  6, "AP":  3 },
+  "lower-fohemia": { "TSAR": 20, "MPB": 10, "LDP": 15, "PM":  5, "WF": 18, "BRP": 10, "UNFB": 10, "HLP":  5, "AP":  5 },
+  "velvon":        { "TSAR": 15, "MPB": 20, "LDP": 25, "PM": 10, "WF":  5, "BRP": 10, "UNFB":  8, "HLP":  4, "AP":  3 },
+  "molonia":       { "TSAR": 30, "MPB": 10, "LDP":  8, "PM": 20, "WF": 12, "BRP":  5, "UNFB": 10, "HLP":  3, "AP":  2 },
+  "upper-dac":     { "TSAR": 20, "MPB": 15, "LDP": 10, "PM": 12, "WF": 15, "BRP":  8, "UNFB":  7, "HLP":  5, "AP":  8 },
+  "central-dac":   { "TSAR": 18, "MPB": 22, "LDP": 12, "PM":  8, "WF": 15, "BRP":  6, "UNFB":  9, "HLP":  5, "AP":  5 },
+  "artsegrad":     { "TSAR": 35, "MPB":  8, "LDP": 15, "PM": 12, "WF": 10, "BRP":  5, "UNFB":  8, "HLP":  4, "AP":  3 },
+  "strednistraz":  { "TSAR": 22, "MPB": 18, "LDP": 10, "PM": 15, "WF":  8, "BRP": 12, "UNFB":  6, "HLP":  5, "AP":  4 },
+  "bailecta":      { "TSAR": 10, "MPB": 15, "LDP": 18, "PM": 25, "WF": 12, "BRP": 10, "UNFB":  4, "HLP":  3, "AP":  3 },
+  "mosle":         { "TSAR": 28, "MPB": 12, "LDP":  8, "PM": 18, "WF": 10, "BRP":  6, "UNFB": 10, "HLP":  4, "AP":  4 },
+  "coast":         { "TSAR": 12, "MPB": 25, "LDP": 20, "PM":  8, "WF": 10, "BRP":  8, "UNFB":  5, "HLP":  6, "AP":  6 },
+  "ostmark":       { "TSAR": 32, "MPB": 10, "LDP": 12, "PM": 15, "WF":  8, "BRP":  7, "UNFB": 10, "HLP":  3, "AP":  3 },
+  "levaruka":      { "TSAR": 15, "MPB": 18, "LDP": 22, "PM": 10, "WF": 12, "BRP":  8, "UNFB":  7, "HLP":  4, "AP":  4 },
+  "medvele":       { "TSAR": 20, "MPB": 14, "LDP": 16, "PM": 12, "WF": 10, "BRP":  9, "UNFB":  8, "HLP":  5, "AP":  6 },
+  "velkdole":      { "TSAR": 25, "MPB":  8, "LDP": 12, "PM": 18, "WF": 14, "BRP": 10, "UNFB":  6, "HLP":  4, "AP":  3 }
 }

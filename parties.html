@@ -26,15 +26,18 @@
         <a href="royal-tree.html" class="button-link">Royal Family</a>
         <a href="world-map.html" class="button-link">World Map</a>
     </div>
+    <div class="bailech-pattern"></div>
     <div class="page" style="width:100%;">
-        <div class="element-container" style="margin-top: 40px; overflow:auto;">
+        <div class="element-container">
             <div id="party-buttons" style="margin-bottom: 12px; display: flex; gap: 8px; flex-wrap: wrap;"></div>
             <div id="region-map-container" style="width: 100%; height: auto;"></div>
+            <div style="width:100%; background-color: #757575; padding: 1px; margin-top:30px;"></div>
+            <div id="party-description" class="party-description"></div>
         </div>
     </div>
     <div class="footer">
     </div>
-    <div id="map-tooltip" style="position:fixed; display:none; pointer-events:none; background:rgba(30,30,30,0.85); color:#eee; padding:6px 10px; border-radius:5px; font-size:13px; z-index:9999; white-space:nowrap;"></div>
+    <div id="map-tooltip"></div>
 </body>
 <script type="module">
     import { gameDetails } from './scripts/game_details.js';
@@ -72,26 +75,34 @@
         const pb = parseInt(color.slice(5, 7), 16);
 
         for (const [regionId, regionData] of Object.entries(popularity)) {
-            const polygon = document.getElementById(regionId);
-            if (!polygon) continue;
+            const el = document.getElementById(regionId);
+            if (!el) continue;
             const pop = regionData[partyId] ?? 0;
             const t = pop / 50;
             const r = Math.round(pr * t + br * (1 - t));
             const g = Math.round(pg * t + bgc * (1 - t));
             const b = Math.round(pb * t + bb * (1 - t));
-            polygon.style.removeProperty('fill');
-            polygon.setAttribute('fill', `rgb(${r},${g},${b})`);
-            polygon.removeAttribute('fill-opacity');
+            const blended = `rgb(${r},${g},${b})`;
+
+            // Handle both single polygons and groups (like central-dac)
+            const polygons = el.tagName === 'g'
+                ? [...el.querySelectorAll('polygon, path')]
+                : [el];
+            for (const polygon of polygons) {
+                polygon.style.removeProperty('fill');
+                polygon.setAttribute('fill', blended);
+                polygon.removeAttribute('fill-opacity');
+            }
 
             const label = regionId.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
-            polygon.style.cursor = 'pointer';
-            polygon.onmousemove = (e) => {
+            el.style.cursor = 'pointer';
+            el.onmousemove = (e) => {
                 tooltip.style.display = 'block';
                 tooltip.style.left = (e.clientX + 14) + 'px';
                 tooltip.style.top = (e.clientY + 14) + 'px';
                 tooltip.innerHTML = `<strong>${label}</strong><br>${partyId} &mdash; ${pop * 2}%`;
             };
-            polygon.onmouseleave = () => { tooltip.style.display = 'none'; };
+            el.onmouseleave = () => { tooltip.style.display = 'none'; };
         }
     }
 
@@ -107,6 +118,7 @@
             btn.classList.add('active');
             activeBtn = btn;
             applyParty(partyId);
+            setPartyDescription(partyId);
         });
         buttonsDiv.appendChild(btn);
     }
@@ -117,5 +129,21 @@
     firstBtn.classList.add('active');
     activeBtn = firstBtn;
     applyParty(firstParty);
+
+    // Load party descriptions
+    const descDiv = document.getElementById('party-description');
+
+    async function setPartyDescription(partyId) {
+        const resp = await fetch(`information/party_descriptions/${partyId}.html`);
+        descDiv.innerHTML = await resp.text();
+    }
+    setPartyDescription(firstParty);
+
+    // Auto-select party from URL hash (e.g. parties.html#TSAR)
+    const hash = window.location.hash.slice(1);
+    if (hash && parties[hash]) {
+        const targetBtn = [...buttonsDiv.children].find(b => b.textContent === hash);
+        if (targetBtn) targetBtn.click();
+    }
 </script>
 </html>

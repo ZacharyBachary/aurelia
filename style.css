@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Faculty+Glyphic&family=Viaoda+Libre&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Faculty+Glyphic&family=Petit+Formal+Script&family=Viaoda+Libre&display=swap');
 .faculty-glyphic-regular {
   font-family: "Faculty Glyphic", sans-serif;
   font-weight: 400;
@@ -6,6 +6,11 @@
 }
 .viaoda-libre-regular {
   font-family: "Viaoda Libre", serif;
+  font-weight: 400;
+  font-style: normal;
+}
+.petit-formal-script-regular {
+  font-family: "Petit Formal Script", cursive;
   font-weight: 400;
   font-style: normal;
 }
@@ -25,6 +30,7 @@ body {
 }
 .page {
     max-width: 1000px;
+    width: 100%;
     margin: 0 auto;
 }
 .header {
@@ -140,6 +146,21 @@ body {
 .party-container span {
     margin: 1px;
 }
+.char-container {
+    border: solid rgb(78, 78, 78) 2px;
+    border-radius: 5px;
+    background-color: rgb(141, 141, 141);
+    padding: 12px 15px;
+    box-shadow: 0 0 50px rgba(102, 102, 102, 0.8);
+}
+
+.char-container h1,
+.char-container h2,
+.char-container h3,
+.char-container p,
+.char-container span {
+    margin: 1px;
+}
 
 #parliament-container svg text {
     font-family: 'Faculty Glyphic', sans-serif !important;
@@ -165,6 +186,13 @@ body {
     border-radius: 20%;
     border:1px solid rgb(194, 194, 194);
     float:left;
+}
+.char-icon {
+    width: 30px;
+    height: 30px;
+    border-radius: 20%;
+    float:left;
+    margin-right:5px;
 }
 .col-icon {
     width: 50px;
@@ -219,3 +247,64 @@ body {
 .party-btn.active {
     border-color: #fff;
 }
+
+#map-tooltip {
+    position: fixed;
+    display: none;
+    pointer-events: none;
+    background: rgba(30,30,30,0.85);
+    color: #eee;
+    padding: 6px 10px;
+    border-radius: 5px;
+    font-size: 13px;
+    z-index: 9999;
+    white-space: nowrap;
+    /* You can override these in your own CSS */
+}
+.line {
+    width:100%;
+    background-color: #757575;
+    padding: 1px;
+    margin-top:30px;
+}
+.pol_underline {
+    font-size:20px;
+    font-family:'Viaoda Libre';
+    font-style: italic;
+}
+.party-name {
+    display:flex;
+    gap:2px;
+}
+.party-name-name {
+    font-size:43px;
+    font-family: 'Faculty Glypic';
+}
+
+.bailech-pattern {
+    /* Set the image source */
+    background-image: url(images/bailech_flag.png);
+    
+    /* Repeat only horizontally */
+    background-repeat: repeat-x;
+    
+    /* Optional: Set the size of each pattern tile */
+    background-size: 100px 100px;
+    
+    /* Ensure the container has height to show the image */
+    height: 100px;
+    width: 100%;
+     /* Keep layout spacing */
+     margin-bottom: -60px;
+
+     /* Place behind content */
+     position: relative;
+     z-index: -1;
+
+     /* Use a mask so the pattern opacity itself fades in a gradient
+         (left/right fade here). Adjust percentages to change fade width. */
+        /* Simple vertical fade from transparent (0%) at top to opaque (100%) at bottom */
+        -webkit-mask-image: linear-gradient(to top, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 100%);
+        mask-image: linear-gradient(to top, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 100%);
+     opacity: .2;
+  }
