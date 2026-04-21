@@ -1,0 +1,966 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration office</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .reg-category {
+            margin-bottom: 6px;
+        }
+        .reg-category-header {
+            display: flex;
+            align-items: baseline;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+        .reg-category-name {
+            font-family: 'Faculty Glyphic', sans-serif;
+            font-size: large;
+            color: rgb(40, 40, 40);
+        }
+        .reg-category-counter {
+            font-size: small;
+            font-family: 'Faculty Glyphic', sans-serif;
+            color: rgb(130, 50, 50);
+            min-width: 3.5em;
+        }
+        .reg-chips-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .chip {
+            padding: 5px 14px;
+            border-radius: 20px;
+            border: 2px solid rgb(78, 78, 78);
+            background-color: rgb(105, 105, 105);
+            color: rgb(225, 225, 225);
+            font-family: 'Faculty Glyphic', sans-serif;
+            font-size: 0.88rem;
+            cursor: pointer;
+            user-select: none;
+            transition: background-color 0.12s, border-color 0.12s, opacity 0.12s;
+        }
+        .chip:hover:not(.chip-excluded):not(.chip-at-limit) {
+            background-color: rgb(130, 130, 130);
+            border-color: rgb(160, 160, 160);
+        }
+        .chip.chip-selected {
+            background-color: rgb(65, 95, 125);
+            border-color: rgb(180, 210, 235);
+            color: white;
+        }
+        .chip.chip-selected:hover {
+            background-color: rgb(75, 108, 140);
+        }
+        .chip.chip-excluded {
+            opacity: 0.32;
+            cursor: not-allowed;
+        }
+        .chip.chip-at-limit {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .chip.chip-auto-selected {
+            background-color: rgb(50, 80, 110);
+            border-color: rgb(130, 170, 200);
+            border-style: dashed;
+            color: rgb(190, 215, 235);
+            cursor: default;
+        }
+        .chip.chip-required {
+            background-color: rgb(110, 75, 20);
+            border-color: rgb(230, 170, 60);
+            color: rgb(255, 225, 150);
+            animation: pulse-required 1.2s ease-in-out infinite;
+        }
+        .chip.chip-pending-locked {
+            opacity: 0.25;
+            cursor: not-allowed;
+        }
+        @keyframes pulse-required {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(230,170,60,0); }
+            50%       { box-shadow: 0 0 8px 3px rgba(230,170,60,0.55); }
+        }
+        .req-banner {
+            display: none;
+            background-color: rgb(100, 65, 10);
+            border: 1.5px solid rgb(200, 145, 40);
+            border-radius: 6px;
+            color: rgb(255, 220, 130);
+            font-family: 'Faculty Glyphic', sans-serif;
+            font-size: 0.85rem;
+            padding: 8px 14px;
+            margin-bottom: 14px;
+        }
+        .req-banner.visible { display: block; }
+        .reg-divider {
+            width: 100%;
+            background-color: #757575;
+            padding: 1px;
+            margin-top: 16px;
+            margin-bottom: 16px;
+        }
+        .reg-layout {
+            display: grid;
+            grid-template-columns: 1fr 220px;
+            gap: 16px;
+            align-items: start;
+        }
+        .reg-summary {
+            position: sticky;
+            top: 12px;
+            border: solid rgb(78, 78, 78) 2px;
+            border-radius: 8px;
+            background-color: rgb(117, 117, 117);
+            padding: 12px 14px;
+            box-sizing: border-box;
+        }
+        .reg-summary-title {
+            font-family: 'Faculty Glyphic', sans-serif;
+            font-size: 0.95rem;
+            color: rgb(230, 230, 230);
+            margin-bottom: 10px;
+            border-bottom: 1px solid rgb(90, 90, 90);
+            padding-bottom: 6px;
+        }
+        .reg-summary-cat {
+            margin-bottom: 8px;
+        }
+        .reg-summary-cat-name {
+            font-family: 'Faculty Glyphic', sans-serif;
+            font-size: 0.75rem;
+            color: rgb(180, 180, 180);
+            margin-bottom: 2px;
+        }
+        .reg-summary-entry {
+            font-family: 'Faculty Glyphic', sans-serif;
+            font-size: 0.85rem;
+            color: rgb(230, 230, 230);
+            padding: 2px 0;
+        }
+        .reg-summary-entry.is-combo {
+            color: rgb(180, 215, 250);
+            font-style: italic;
+        }
+        .reg-summary-empty {
+            font-family: 'Faculty Glyphic', sans-serif;
+            font-size: 0.8rem;
+            color: rgb(150, 150, 150);
+            font-style: italic;
+        }
+        @media (max-width: 700px) {
+            .reg-layout { grid-template-columns: 1fr; }
+            .reg-summary { position: static; }
+        }
+
+        /* Party identity form */
+        .party-identity-section {
+            margin-bottom: 0;
+        }
+        .party-identity-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px 20px;
+        }
+        .party-field {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        .party-field.full-width {
+            grid-column: 1 / -1;
+        }
+        .party-field-label {
+            font-family: 'Faculty Glyphic', sans-serif;
+            font-size: 0.82rem;
+            color: rgb(50, 50, 50);
+            font-weight: bold;
+        }
+        .party-text-input,
+        .party-abbr-input,
+        .party-desc-textarea {
+            font-family: 'Faculty Glyphic', sans-serif;
+            font-size: 0.88rem;
+            background-color: #757575;
+            color: rgb(230, 230, 230);
+            border: 2px solid rgb(78, 78, 78);
+            border-radius: 6px;
+            padding: 6px 10px;
+            outline: none;
+            transition: border-color 0.12s;
+            box-sizing: border-box;
+            width: 100%;
+        }
+        .party-text-input:focus,
+        .party-abbr-input:focus,
+        .party-desc-textarea:focus {
+            border-color: rgb(130, 170, 210);
+        }
+        .party-abbr-input {
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            width: 120px;
+        }
+        .party-desc-textarea {
+            min-height: 72px;
+            resize: vertical;
+        }
+        .party-color-row {
+            display: flex;
+            gap: 20px;
+            align-items: flex-end;
+        }
+        .party-color-item {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        .party-color-input {
+            width: 52px;
+            height: 36px;
+            border: 2px solid rgb(78, 78, 78);
+            border-radius: 10px;
+            background: none;
+            cursor: pointer;
+            padding: 0;
+            appearance: none;
+            -webkit-appearance: none;
+        }
+        .party-color-input::-webkit-color-swatch-wrapper { padding: 0; }
+        .party-color-input::-webkit-color-swatch { border: none; border-radius: 4px; }
+        .party-color-input::-moz-color-swatch { border: none; border-radius: 4px; }
+
+        /* Submit */
+        .submit-section {
+            margin-top: 18px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+        .submit-btn {
+            font-family: 'Faculty Glyphic', sans-serif;
+            font-size: 0.95rem;
+            background-color: rgb(45, 80, 115);
+            color: rgb(220, 235, 250);
+            border: 2px solid rgb(100, 160, 210);
+            border-radius: 8px;
+            padding: 9px 26px;
+            cursor: pointer;
+            transition: background-color 0.12s;
+        }
+        .submit-btn:hover {
+            background-color: rgb(60, 100, 140);
+        }
+        .submit-btn:disabled {
+            opacity: 0.45;
+            cursor: not-allowed;
+        }
+        .submit-banner {
+            display: none;
+            border-radius: 6px;
+            font-family: 'Faculty Glyphic', sans-serif;
+            font-size: 0.85rem;
+            padding: 8px 14px;
+        }
+        .submit-banner.error {
+            display: block;
+            background-color: rgb(100, 30, 25);
+            border: 1.5px solid rgb(200, 70, 65);
+            color: rgb(255, 180, 175);
+        }
+
+        /* Discord output */
+        .discord-output-section {
+            display: none;
+            margin-top: 20px;
+        }
+        .discord-output-section.visible { display: block; }
+        .discord-output-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 8px;
+        }
+        .discord-output-label {
+            font-family: 'Faculty Glyphic', sans-serif;
+            font-size: 0.88rem;
+            color: rgb(50, 50, 50);
+            font-weight: bold;
+        }
+        .copy-btn {
+            font-family: 'Faculty Glyphic', sans-serif;
+            font-size: 0.8rem;
+            background-color: rgb(85, 85, 85);
+            color: rgb(220, 220, 220);
+            border: 1.5px solid rgb(110, 110, 110);
+            border-radius: 5px;
+            padding: 4px 12px;
+            cursor: pointer;
+            transition: background-color 0.12s;
+        }
+        .copy-btn:hover { background-color: rgb(110, 110, 110); }
+        .copy-btn.copied {
+            background-color: rgb(30, 90, 35);
+            border-color: rgb(70, 170, 80);
+            color: rgb(170, 240, 175);
+        }
+        .discord-textarea {
+            width: 100%;
+            min-height: 260px;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 0.82rem;
+            background-color: rgb(40, 40, 40);
+            color: rgb(210, 210, 210);
+            border: 2px solid rgb(78, 78, 78);
+            border-radius: 6px;
+            padding: 10px 12px;
+            box-sizing: border-box;
+            resize: vertical;
+            outline: none;
+        }
+
+        /* Summary identity block */
+        .reg-summary-identity {
+            margin-bottom: 10px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid rgb(90, 90, 90);
+        }
+        .reg-summary-party-name {
+            font-family: 'Faculty Glyphic', sans-serif;
+            font-size: 0.95rem;
+            color: rgb(230, 230, 230);
+            margin-bottom: 1px;
+        }
+        .reg-summary-abbr {
+            font-family: 'Faculty Glyphic', sans-serif;
+            font-size: 0.78rem;
+            color: rgb(160, 160, 160);
+            margin-bottom: 5px;
+        }
+        .reg-summary-desc {
+            font-family: 'Faculty Glyphic', sans-serif;
+            font-size: 0.78rem;
+            color: rgb(190, 190, 190);
+            font-style: italic;
+            margin-bottom: 7px;
+        }
+        .reg-summary-colors {
+            display: flex;
+            gap: 8px;
+        }
+        .reg-summary-swatch {
+            width: 22px;
+            height: 22px;
+            border-radius: 4px;
+            border: 1.5px solid rgb(90, 90, 90);
+            flex-shrink: 0;
+        }
+        .reg-summary-swatch-label {
+            font-family: 'Faculty Glyphic', sans-serif;
+            font-size: 0.72rem;
+            color: rgb(150, 150, 150);
+            margin-top: 2px;
+            text-align: center;
+        }
+        ::placeholder {
+            color:rgb(175, 175, 175)
+        }
+    </style>
+</head>
+<body>
+    <div class="year-container">
+        <span style="font-size:xx-large; color:lightgray; margin-left: 7px;"><span id="year"></span></span>
+        <span style="font-size:large; color:rgb(167, 167, 167); margin-left: 4px; margin-top: 10px;"><span id="turn"></span></span>
+        <span style="font-size:xx-large; color:rgb(155, 155, 155); margin-left:12px; margin-right:12px;">|</span>
+        <span style="font-size:large; color:rgb(167, 167, 167); margin-left: 4px; margin-top: 4px;">👑</span>
+        <span style="font-size:xx-large; color:rgb(155, 155, 155); margin-left:12px; margin-right:12px;">|</span>
+        <span style="font-size:small; color:lightgray; margin-left: 4px; margin-top:4px">Emperor, Karl IV<br>Empress, Ashley</span>
+        <span style="font-size:xx-large; color:rgb(155, 155, 155); margin-left:12px; margin-right:12px;">|</span>
+        <span style="font-size:small; color:lightgray; margin-left: 4px; margin-top:4px">Prime Minister,<br>Her Majesty Ashley Moadstein</span>
+    </div>
+    <div class="tab-container">
+        <a href="index.html" class="button-link">Home</a>
+        <a href="parliament.html" class="button-link">Parliament</a>
+        <a href="region-map.html" class="button-link">The Empire</a>
+        <a href="elections.html" class="button-link">Elections</a>
+        <a href="parties.html" class="button-link">Parties</a>
+        <a href="royal-tree.html" class="button-link">Royal Family</a>
+        <a href="world-map.html" class="button-link">World Map</a>
+        <a href="registration.html" class="button-link active">Registartion</a>
+    </div>
+    <div class="bailech-pattern"></div>
+    <div class="page" style="width:100%; max-width:1200px;">
+        <div class="element-container">
+            <h2 style="font-family:'Faculty Glyphic'; color:rgb(40,40,40); margin-top:4px; margin-bottom:6px;">Party Registration</h2>
+            <p style="color:rgb(55,55,55); font-size:small; margin-bottom:16px;">Select characteristics for your party. Each category shows how many selections are required.</p>
+            <div style="width:100%; background-color:#757575; padding:1px; margin-bottom:18px;"></div>
+
+            <!-- Party Identity -->
+            <div class="party-identity-section">
+                <div class="party-identity-grid">
+                    <div class="party-field">
+                        <label class="party-field-label" for="party-name">Party Name</label>
+                        <input class="party-text-input" type="text" id="party-name" placeholder="e.g. Monarchist Party of Bailecha" autocomplete="off">
+                    </div>
+                    <div class="party-field">
+                        <label class="party-field-label" for="party-abbr">Abbreviation <span style="font-weight:normal;font-size:0.75rem;color:rgb(100,100,100)">(1–6 letters)</span></label>
+                        <input class="party-abbr-input" type="text" id="party-abbr" maxlength="6" placeholder="e.g. MPB" autocomplete="off">
+                    </div>
+                    <div class="party-field full-width">
+                        <label class="party-field-label" for="party-desc">Description</label>
+                        <textarea class="party-desc-textarea" id="party-desc" placeholder="A brief description of the party."></textarea>
+                    </div>
+                    <div class="party-field full-width">
+                        <label class="party-field-label">Party Colors</label>
+                        <div class="party-color-row">
+                            <div class="party-color-item">
+                                <span class="party-field-label" style="font-weight:normal;">Primary</span>
+                                <input class="party-color-input" type="color" id="party-color-primary" value="#4a6fa5">
+                            </div>
+                            <div class="party-color-item">
+                                <span class="party-field-label" style="font-weight:normal;">Secondary</span>
+                                <input class="party-color-input" type="color" id="party-color-secondary" value="#c9a84c">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div style="width:100%; background-color:#757575; padding:1px; margin-top:18px; margin-bottom:18px;"></div>
+
+            <div id="req-banner" class="req-banner"></div>
+            <div class="reg-layout">
+                <div id="characteristics-container"></div>
+                <div class="reg-summary">
+                    <div class="reg-summary-title">Party Overview</div>
+                    <div id="summary-identity"></div>
+                    <div id="summary-panel"><span class="reg-summary-empty">Nothing selected yet.</span></div>
+                </div>
+            </div>
+            <div class="submit-section">
+                <button class="submit-btn" id="submit-btn">Generate Registration</button>
+                <div class="submit-banner" id="submit-banner"></div>
+            </div>
+            <div class="discord-output-section" id="discord-output-section">
+                <div class="discord-output-header">
+                    <span class="discord-output-label">Discord Format — copy and paste into #party-registry</span>
+                    <button class="copy-btn" id="copy-btn">Copy</button>
+                </div>
+                <textarea class="discord-textarea" id="discord-textarea" readonly></textarea>
+            </div>
+        </div>
+    </div>
+    <div class="footer"></div>
+</body>
+<script type="module">
+    import { gameDetails } from './scripts/game_details.js';
+    document.querySelectorAll('#year').forEach(el => el.textContent = gameDetails.year);
+    document.querySelectorAll('#turn').forEach(el => el.textContent = gameDetails.turn);
+
+    const data = await fetch('information/characteristics.json').then(r => r.json());
+    const { categories, characteristics, combinations = [] } = data;
+
+    // --- State ---
+    const selectedGlobal = new Set();            // Set<charId> — all currently selected IDs
+    const autoSelectedGlobal = new Map();        // Map<triggerId, Set<charId>> — IDs added automatically by a trigger
+    const categorySelections = new Map();        // Map<catId, Set<charId>>
+    categories.forEach(cat => categorySelections.set(cat.id, new Set()));
+
+    // Returns all IDs that are currently auto-selected (by any trigger)
+    function computeAutoSelected() {
+        const auto = new Set();
+        for (const ids of autoSelectedGlobal.values()) {
+            for (const id of ids) auto.add(id);
+        }
+        return auto;
+    }
+
+    // Apply autoSelects for a newly selected char: add each auto-target into
+    // every category that contains it (respecting max, radio rules).
+    function applyAutoSelects(triggerId) {
+        const char = characteristics[triggerId];
+        if (!char?.autoSelects?.length) return;
+        const added = new Set();
+        for (const autoId of char.autoSelects) {
+            if (selectedGlobal.has(autoId)) continue; // already selected
+            selectedGlobal.add(autoId);
+            added.add(autoId);
+            // Add into every category that lists this char
+            for (const cat of categories) {
+                if (!cat.characteristics.includes(autoId)) continue;
+                const catSel = categorySelections.get(cat.id);
+                if (cat.max === 1) {
+                    // Clear any existing manual selection first
+                    for (const prev of catSel) {
+                        catSel.delete(prev);
+                        selectedGlobal.delete(prev);
+                    }
+                }
+                if (catSel.size < cat.max) catSel.add(autoId);
+            }
+        }
+        if (added.size) autoSelectedGlobal.set(triggerId, added);
+    }
+
+    // Remove autoSelects for a char being deselected.
+    function removeAutoSelects(triggerId) {
+        const added = autoSelectedGlobal.get(triggerId);
+        if (!added) return;
+        for (const autoId of added) {
+            // Only remove if no OTHER trigger is also forcing this ID
+            let keptByOther = false;
+            for (const [otherId, otherSet] of autoSelectedGlobal) {
+                if (otherId !== triggerId && otherSet.has(autoId)) {
+                    keptByOther = true;
+                    break;
+                }
+            }
+            if (!keptByOther) {
+                selectedGlobal.delete(autoId);
+                for (const catSel of categorySelections.values()) catSel.delete(autoId);
+            }
+        }
+        autoSelectedGlobal.delete(triggerId);
+    }
+
+    // Returns the first unmet requiresOne constraint across all selected chars,
+    // or null if everything is satisfied.
+    // { triggerId, triggerName, options: Set<charId> }
+    function computePending() {
+        for (const id of selectedGlobal) {
+            const char = characteristics[id];
+            if (!char?.requiresOne?.length) continue;
+            const alreadyMet = char.requiresOne.some(optId => selectedGlobal.has(optId));
+            if (!alreadyMet) {
+                return {
+                    triggerId:   id,
+                    triggerName: char.name,
+                    options:     new Set(char.requiresOne)
+                };
+            }
+        }
+        return null;
+    }
+
+    // Compute the set of IDs that are blocked due to global exclusivity.
+    // Exclusions are applied symmetrically: if A.exclusiveWith contains B,
+    // selecting either A or B will block the other, even if B.exclusiveWith
+    // does not list A.
+    function computeExcluded() {
+        const excluded = new Set();
+
+        // Forward pass: selected char blocks everything in its exclusiveWith list
+        for (const id of selectedGlobal) {
+            const char = characteristics[id];
+            if (char?.exclusiveWith) {
+                for (const exId of char.exclusiveWith) {
+                    excluded.add(exId);
+                }
+            }
+        }
+
+        // Reverse pass: if any char's exclusiveWith list contains a selected ID,
+        // that char is also blocked (handles one-directional JSON entries)
+        for (const [charId, char] of Object.entries(characteristics)) {
+            if (char.exclusiveWith) {
+                for (const exId of char.exclusiveWith) {
+                    if (selectedGlobal.has(exId)) {
+                        excluded.add(charId);
+                        break;
+                    }
+                }
+            }
+        }
+
+        // satisfiedByOne: if a char with this constraint is selected and one of the
+        // listed options is already selected, all other options become excluded.
+        // Also, if ALL options are already selected (without this char), block this char.
+        for (const id of selectedGlobal) {
+            const char = characteristics[id];
+            if (!char?.satisfiedByOne?.length) continue;
+            const chosen = char.satisfiedByOne.find(optId => selectedGlobal.has(optId));
+            if (chosen) {
+                for (const optId of char.satisfiedByOne) {
+                    if (optId !== chosen) excluded.add(optId);
+                }
+            }
+        }
+        // If all satisfiedByOne options of an unselected char are already selected,
+        // block that char (selecting it would immediately exclude one of them).
+        for (const [charId, char] of Object.entries(characteristics)) {
+            if (selectedGlobal.has(charId)) continue;
+            if (!char?.satisfiedByOne?.length) continue;
+            const allSelected = char.satisfiedByOne.every(optId => selectedGlobal.has(optId));
+            if (allSelected) excluded.add(charId);
+        }
+
+        return excluded;
+    }
+
+    function updateAllChipStates() {
+        const excluded    = computeExcluded();
+        const autoSelected = computeAutoSelected();
+        const pending     = computePending();
+
+        // Update the requirement banner
+        const banner = document.getElementById('req-banner');
+        if (pending) {
+            const optionNames = [...pending.options]
+                .map(id => characteristics[id]?.name ?? id)
+                .join(' or ');
+            banner.textContent = `"${pending.triggerName}" requires you to also select: ${optionNames}`;
+            banner.classList.add('visible');
+        } else {
+            banner.classList.remove('visible');
+        }
+
+        for (const cat of categories) {
+            const catSel = categorySelections.get(cat.id);
+            const atMax  = catSel.size >= cat.max;
+
+            for (const charId of cat.characteristics) {
+                const chip = document.querySelector(
+                    `.chip[data-cat="${cat.id}"][data-char="${charId}"]`
+                );
+                if (!chip) continue;
+
+                const isSelected    = catSel.has(charId);
+                const isAuto        = isSelected && autoSelected.has(charId);
+                const isExcluded    = excluded.has(charId) && !isSelected;
+                const isAtLimit     = atMax && !isSelected && !isExcluded;
+                const isRequiredOpt = pending && pending.options.has(charId) && !isSelected && !isExcluded;
+                // Locked by a pending requirement: chip is not one of the allowed options and not already selected
+                const isPendingLocked = pending && !isSelected && !isRequiredOpt;
+
+                chip.classList.toggle('chip-selected',      isSelected && !isAuto);
+                chip.classList.toggle('chip-auto-selected', isAuto);
+                chip.classList.toggle('chip-required',      isRequiredOpt);
+                chip.classList.toggle('chip-excluded',      isExcluded && !isRequiredOpt && !isPendingLocked);
+                chip.classList.toggle('chip-at-limit',      isAtLimit && !isRequiredOpt && !isPendingLocked);
+                chip.classList.toggle('chip-pending-locked', isPendingLocked && !isExcluded);
+            }
+
+            // Update the counter badge for this category
+            const counter = document.querySelector(`[data-counter="${cat.id}"]`);
+            if (counter) {
+                const sel    = catSel.size;
+                const needed = cat.min === cat.max ? `${cat.max}` : `${cat.min}–${cat.max}`;
+                counter.textContent = `${sel} / ${needed}`;
+                const complete = sel >= cat.min && sel <= cat.max;
+                counter.style.color = complete ? 'rgb(35, 100, 35)' : 'rgb(130, 50, 50)';
+            }
+        }
+    }
+
+    function handleChipClick(catId, charId) {
+        const catSel      = categorySelections.get(catId);
+        const cat         = categories.find(c => c.id === catId);
+        const excluded    = computeExcluded();
+        const autoSelected = computeAutoSelected();
+        const pending     = computePending();
+
+        // Cannot interact with an auto-selected chip directly
+        if (autoSelected.has(charId)) return;
+
+        if (catSel.has(charId)) {
+            // Deselect — remove from ALL categories that contain this char
+            removeAutoSelects(charId);
+            for (const c of categories) {
+                if (c.characteristics.includes(charId)) {
+                    categorySelections.get(c.id).delete(charId);
+                }
+            }
+            selectedGlobal.delete(charId);
+        } else {
+            // When a requiresOne is pending, only the option chips are clickable
+            if (pending && !pending.options.has(charId)) return;
+
+            // Cannot select a globally excluded characteristic
+            if (excluded.has(charId)) return;
+
+            if (cat.max === 1) {
+                // Radio behaviour: clear current selection in this category first,
+                // and sync that removal to every other category containing the same char.
+                for (const prev of [...catSel]) {
+                    removeAutoSelects(prev);
+                    selectedGlobal.delete(prev);
+                    for (const c of categories) {
+                        if (c.characteristics.includes(prev)) {
+                            categorySelections.get(c.id).delete(prev);
+                        }
+                    }
+                }
+            } else {
+                // Multi-select: respect the category maximum
+                if (catSel.size >= cat.max) return;
+            }
+
+            // Select in ALL categories that contain this char (respecting their max)
+            for (const c of categories) {
+                if (!c.characteristics.includes(charId)) continue;
+                const cs = categorySelections.get(c.id);
+                if (c.id === cat.id) {
+                    cs.add(charId); // already handled max check above for clicked category
+                } else if (c.max === 1) {
+                    // Radio: displace the current occupant in the other category
+                    for (const prev of [...cs]) {
+                        removeAutoSelects(prev);
+                        cs.delete(prev);
+                        selectedGlobal.delete(prev);
+                    }
+                    cs.add(charId);
+                } else if (cs.size < c.max) {
+                    cs.add(charId);
+                }
+                // If another multi-select category is already full, skip silently
+            }
+            selectedGlobal.add(charId);
+            applyAutoSelects(charId);
+        }
+
+        updateAllChipStates();
+        updateSummaryPanel();
+    }
+
+    // --- Summary panel ---
+    function updateSummaryPanel() {
+        const panel = document.getElementById('summary-panel');
+        panel.innerHTML = '';
+
+        // Build a working copy of selectedGlobal to track which IDs have been
+        // consumed by a combination so we don't list them individually too.
+        const consumed = new Set();
+        const rows = []; // { catName, entries: [{ label, isCombo }] }
+
+        for (const cat of categories) {
+            const catSel = categorySelections.get(cat.id);
+            if (catSel.size === 0) continue;
+
+            const entries = [];
+            const remaining = new Set(catSel);
+
+            // Check combinations: a combo matches if ALL its required IDs are
+            // present in the current category selection AND in selectedGlobal.
+            for (const combo of combinations) {
+                const allSelected = combo.requires.every(id => selectedGlobal.has(id));
+                const anyInCat    = combo.requires.some(id => catSel.has(id));
+                // If the combo specifies categories, only show it in those categories
+                const inAllowedCat = !combo.categories || combo.categories.includes(cat.id);
+                if (allSelected && anyInCat && inAllowedCat) {
+                    // Show combo once per category that contains any of its members
+                    entries.push({ label: combo.name, isCombo: true });
+                    for (const id of combo.requires) remaining.delete(id);
+                }
+            }
+
+            // List remaining (non-combo) selected chars
+            for (const charId of remaining) {
+                const char = characteristics[charId];
+                if (char) entries.push({ label: char.name, isCombo: false });
+            }
+
+            if (entries.length) rows.push({ catName: cat.name, entries });
+        }
+
+        if (rows.length === 0) {
+            panel.innerHTML = '<span class="reg-summary-empty">Nothing selected yet.</span>';
+            return;
+        }
+
+        for (const row of rows) {
+            const catDiv = document.createElement('div');
+            catDiv.className = 'reg-summary-cat';
+
+            const catName = document.createElement('div');
+            catName.className = 'reg-summary-cat-name';
+            catName.textContent = row.catName;
+            catDiv.appendChild(catName);
+
+            for (const entry of row.entries) {
+                const entryEl = document.createElement('div');
+                entryEl.className = 'reg-summary-entry' + (entry.isCombo ? ' is-combo' : '');
+                entryEl.textContent = entry.label;
+                catDiv.appendChild(entryEl);
+            }
+
+            panel.appendChild(catDiv);
+        }
+    }
+
+    // --- Render ---
+    const container = document.getElementById('characteristics-container');
+
+    categories.forEach((cat, idx) => {
+        // Category header
+        const header = document.createElement('div');
+        header.className = 'reg-category-header';
+
+        const nameEl = document.createElement('span');
+        nameEl.className = 'reg-category-name';
+        nameEl.textContent = cat.name;
+
+        const counter = document.createElement('span');
+        counter.className = 'reg-category-counter';
+        counter.dataset.counter = cat.id;
+        const needed = cat.min === cat.max ? `${cat.max}` : `${cat.min}–${cat.max}`;
+        counter.textContent = `0 / ${needed}`;
+
+        header.appendChild(nameEl);
+        header.appendChild(counter);
+
+        // Chips row
+        const chipsRow = document.createElement('div');
+        chipsRow.className = 'reg-chips-row';
+
+        for (const charId of cat.characteristics) {
+            const char = characteristics[charId];
+            if (!char) continue;
+
+            const chip = document.createElement('button');
+            chip.className = 'chip';
+            chip.dataset.cat  = cat.id;
+            chip.dataset.char = charId;
+            chip.textContent  = char.name;
+            if (char.description) chip.title = char.description;
+
+            chip.addEventListener('click', () => handleChipClick(cat.id, charId));
+            chipsRow.appendChild(chip);
+        }
+
+        const section = document.createElement('div');
+        section.className = 'reg-category';
+        section.appendChild(header);
+        section.appendChild(chipsRow);
+        container.appendChild(section);
+
+        // Divider between categories (not after the last one)
+        if (idx < categories.length - 1) {
+            const divider = document.createElement('div');
+            divider.className = 'reg-divider';
+            container.appendChild(divider);
+        }
+    });
+
+    // Set initial chip states (counters start red until filled)
+    updateAllChipStates();
+    updateSummaryPanel();
+    updateSummaryIdentity();
+
+    // --- Identity summary ---
+    function updateSummaryIdentity() {
+        const name  = document.getElementById('party-name').value.trim();
+        const abbr  = document.getElementById('party-abbr').value.trim().toUpperCase();
+        const desc  = document.getElementById('party-desc').value.trim();
+        const col1  = document.getElementById('party-color-primary').value;
+        const col2  = document.getElementById('party-color-secondary').value;
+        const panel = document.getElementById('summary-identity');
+
+        if (!name && !abbr) {
+            panel.innerHTML = '';
+            return;
+        }
+
+        const descSnippet = desc.length > 80 ? desc.slice(0, 77) + '…' : desc;
+
+        panel.innerHTML = `
+            <div class="reg-summary-identity">
+                <div class="reg-summary-party-name">${name || '<em style="color:rgb(130,130,130)">Unnamed</em>'}</div>
+                ${abbr ? `<div class="reg-summary-abbr">${abbr}</div>` : ''}
+                ${descSnippet ? `<div class="reg-summary-desc">${descSnippet}</div>` : ''}
+                <div class="reg-summary-colors">
+                    <div>
+                        <div class="reg-summary-swatch" style="background:${col1};"></div>
+                        <div class="reg-summary-swatch-label">Primary</div>
+                    </div>
+                    <div>
+                        <div class="reg-summary-swatch" style="background:${col2};"></div>
+                        <div class="reg-summary-swatch-label">Secondary</div>
+                    </div>
+                </div>
+            </div>`;
+    }
+
+    ['party-name', 'party-abbr', 'party-desc', 'party-color-primary', 'party-color-secondary'].forEach(id => {
+        document.getElementById(id).addEventListener('input', updateSummaryIdentity);
+    });
+
+    // Auto-uppercase abbreviation
+    document.getElementById('party-abbr').addEventListener('input', function () {
+        const pos = this.selectionStart;
+        this.value = this.value.toUpperCase().replace(/[^A-Z]/g, '');
+        this.setSelectionRange(pos, pos);
+    });
+
+    // --- Submit ---
+    document.getElementById('submit-btn').addEventListener('click', () => {
+        const banner = document.getElementById('submit-banner');
+        banner.className = 'submit-banner';
+        banner.textContent = '';
+
+        const name  = document.getElementById('party-name').value.trim();
+        const abbr  = document.getElementById('party-abbr').value.trim().toUpperCase();
+        const desc  = document.getElementById('party-desc').value.trim();
+        const col1  = document.getElementById('party-color-primary').value;
+        const col2  = document.getElementById('party-color-secondary').value;
+
+        // Client-side validation
+        if (!name) {
+            banner.textContent = 'Please enter a party name.';
+            banner.classList.add('error');
+            return;
+        }
+        if (!abbr || !/^[A-Z]{1,6}$/.test(abbr)) {
+            banner.textContent = 'Please enter a valid abbreviation (1–6 uppercase letters).';
+            banner.classList.add('error');
+            return;
+        }
+
+        // Check all categories meet minimum
+        const unmet = categories.filter(cat => categorySelections.get(cat.id).size < cat.min);
+        if (unmet.length > 0) {
+            banner.textContent = `Please complete required characteristics: ${unmet.map(c => c.name).join(', ')}.`;
+            banner.classList.add('error');
+            return;
+        }
+
+        // Build Discord-formatted text
+        let lines = [];
+        lines.push(`# **${name}** - **${abbr}**`);
+        lines.push(`- **Primary Color**: ${col1}`);
+        lines.push(`- **Secondary Color**: ${col2}`);
+        lines.push('');
+        lines.push('## Description');
+        lines.push(desc || '*(No description provided)*');
+        lines.push('');
+        lines.push('## Characteristics');
+        for (const cat of categories) {
+            const sel = categorySelections.get(cat.id);
+            const names = [...sel].map(id => characteristics[id]?.name ?? id).join(', ');
+            lines.push(`- **${cat.name}**: *${names}*`);
+        }
+
+        const output = lines.join('\n');
+        const textarea = document.getElementById('discord-textarea');
+        textarea.value = output;
+        document.getElementById('discord-output-section').classList.add('visible');
+        textarea.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    });
+
+    // --- Copy button ---
+    document.getElementById('copy-btn').addEventListener('click', () => {
+        const textarea = document.getElementById('discord-textarea');
+        navigator.clipboard.writeText(textarea.value).then(() => {
+            const btn = document.getElementById('copy-btn');
+            btn.textContent = 'Copied!';
+            btn.classList.add('copied');
+            setTimeout(() => {
+                btn.textContent = 'Copy';
+                btn.classList.remove('copied');
+            }, 2000);
+        });
+    });
+</script>
+</html>

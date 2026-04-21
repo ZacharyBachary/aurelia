@@ -6,6 +6,19 @@
     <title>World Map</title>
     <link rel="stylesheet" href="style.css">
 </head>
+<style>
+    .parties-char-row{
+        margin-top:10px;
+    }
+    .parties-char-title{
+        font-size:17px;
+        margin-top:8px;
+        margin-bottom:3px;
+        border-bottom:solid 0px #616161;
+        font-family: 'Vioda Libre';
+        color:#afafaf;
+    }
+</style>
 <body>
     <div class="year-container">
         <span style="font-size:xx-large; color:lightgray; margin-left: 7px;"><span id="year"></span></span>
@@ -78,7 +91,7 @@
             const el = document.getElementById(regionId);
             if (!el) continue;
             const pop = regionData[partyId] ?? 0;
-            const t = pop / 50;
+            const t = pop / 40;
             const r = Math.round(pr * t + br * (1 - t));
             const g = Math.round(pg * t + bgc * (1 - t));
             const b = Math.round(pb * t + bb * (1 - t));
@@ -100,7 +113,7 @@
                 tooltip.style.display = 'block';
                 tooltip.style.left = (e.clientX + 14) + 'px';
                 tooltip.style.top = (e.clientY + 14) + 'px';
-                tooltip.innerHTML = `<strong>${label}</strong><br>${partyId} &mdash; ${pop * 2}%`;
+                tooltip.innerHTML = `<strong>${label}</strong><br>${partyId} &mdash; ${pop * 2}`;
             };
             el.onmouseleave = () => { tooltip.style.display = 'none'; };
         }

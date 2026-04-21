@@ -32,6 +32,8 @@ body {
     max-width: 1000px;
     width: 100%;
     margin: 0 auto;
+    box-sizing: border-box;
+    padding: 0 12px;
 }
 .header {
     padding:15px;
@@ -51,9 +53,12 @@ body {
     border-top: solid rgb(78, 78, 78) 3px;
     border-bottom: solid rgb(78, 78, 78) 3px;
     padding-top:10px;
-    padding-bottom:10px;
+    padding-bottom:12px;
     background: linear-gradient(rgb(105, 105, 105), rgb(122, 122, 122));
+    overflow-x: auto;
+    scrollbar-width: none;
 }
+.tab-container::-webkit-scrollbar { display: none; }
 .year-container {
     display:flex;
     border-top: solid rgb(78, 78, 78) 3px;
@@ -71,11 +76,13 @@ body {
     font-size: large;
     position:relative;
     color:lightgray;
+    white-space: nowrap;
+    flex-shrink: 0;
 }
 .button-link:after {
     content:"";
     position:absolute;
-    bottom:-12.5px;
+    bottom:-12px;
     left:0;
     width:100%;
     height:2.5px;
@@ -87,7 +94,7 @@ body {
 .button-link.active:after {
     content:"";
     position:absolute;
-    bottom:-12.5px;
+    bottom:-12px;
     left:0;
     width:100%;
     height:2.5px;
@@ -105,6 +112,8 @@ body {
     background-color: rgb(156, 156, 156);
     padding: 12px 15px;
     box-shadow: 0 0 50px rgba(102, 102, 102, 0.8);
+    box-sizing: border-box;
+    width: 100%;
 }
 
 .element-container h1,
@@ -175,10 +184,18 @@ body {
 }
 
 .layout {
-    display: flex;
+    display: grid;
+    grid-template-columns: 1fr 30%;
+    grid-template-rows: min-content min-content;
+    grid-template-areas:
+        "diagram panel"
+        "gallery panel";
     gap: 15px;
     margin-top: 12px;
 }
+.layout-column { grid-area: diagram; align-self: start; }
+#right-panel { grid-area: panel; width: auto !important; align-self: start; }
+.gallery-wrapper { grid-area: gallery; }
 
 .party-icon {
     width: 30px;
@@ -256,7 +273,7 @@ body {
     color: #eee;
     padding: 6px 10px;
     border-radius: 5px;
-    font-size: 13px;
+    font-size: 16px;
     z-index: 9999;
     white-space: nowrap;
     /* You can override these in your own CSS */
@@ -278,7 +295,7 @@ body {
 }
 .party-name-name {
     font-size:43px;
-    font-family: 'Faculty Glypic';
+    font-family: 'Faculty Glyphic';
 }
 
 .bailech-pattern {
@@ -308,3 +325,23 @@ body {
         mask-image: linear-gradient(to top, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 100%);
      opacity: .2;
   }
+
+@media (max-width: 700px) {
+    .layout {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .layout-column { order: 1; }
+    #right-panel { order: 2; width: 100% !important; }
+    .gallery-wrapper { order: 3; }
+}
+.chip {
+    padding: 5px;
+    padding-left: 0px;
+    color: rgb(225, 225, 225);
+    font-family: 'Faculty Glyphic', sans-serif;
+    font-size: 1.05rem;
+    cursor:pointer;
+    user-select: none;
+}

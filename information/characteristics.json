@@ -1,0 +1,403 @@
+{
+  "categories": [
+    {
+        "id": "economy",
+        "name": "Economy",
+        "min": 1,
+        "max": 2,
+        "characteristics": ["company_rule", "laissez-faire", "capitalist","social_capitalism","socialism","anarchism"]
+    },
+    {
+        "id": "structure",
+        "name": "Structure",
+        "min": 1,
+        "max": 2,
+        "characteristics": ["absolutism","unitarianism","federalism","confederation","minarchism"]
+    },
+    {
+        "id":"governance",
+        "name": "Governance",
+        "min": 1,
+        "max": 3,
+        "characteristics": ["absolutism","authoritarianism","monarchism","constitutionalism","liberalism","republicanism"]
+    },
+    {
+        "id":"foreign_policy",
+        "name":"Foreign Policy",
+        "min":1,
+        "max":1,
+        "characteristics": ["isolationism","protectionism","conservationist","imperialism"]
+    },
+    {
+        "id":"religion",
+        "name":"Religion",
+        "min":1,
+        "max":1,
+        "characteristics":["theocratism","church_integration","non_interference","secularism"]
+    },
+    {
+        "id":"tradition",
+        "name":"Tradition",
+        "min":1,
+        "max":3,
+        "characteristics":["social_laws","romanticism","conservatism","liberalism","progressivism"]
+    },
+    {
+        "id":"social",
+        "name":"Social",
+        "min":1,
+        "max":2,
+        "characteristics":["nationalism","conservatism","charitability","welfare"]
+    },
+    {
+        "id":"monarch",
+        "name":"Monarchism",
+        "min":1,
+        "max":1,
+        "characteristics":["absolutism","royalism","deference","respect_tradition","hostitlity","republicanism"]
+    },
+    {
+        "id":"colonialism",
+        "name":"Colonialism",
+        "min":1,
+        "max":2,
+        "characteristics":["equality","polygenism","anti-colonial","civilizing_duty","mercantilism","imperialism"]
+    },
+    {
+        "id":"minority_rights",
+        "name":"Minority Rights",
+        "min":1,
+        "max":2,
+        "characteristics":["segregation","lesser_peoples","outsider_citizens","limited_rights","minority_equality","integration"]
+    },
+    {
+        "id":"womans_rights",
+        "name":"Womans Rights",
+        "min":1,
+        "max":2,
+        "characteristics":["social_laws","enforced_patriarchy","social_restriction","voting_rights"]
+    },
+    {
+        "id":"minority",
+        "name":"Minority",
+        "min":1,
+        "max":1,
+        "characteristics":["minority_no","minority_histochea","minority_fohemia","minority_velvon","minority_dacia","minority_jhallic","minority_all"]
+    }
+  ],
+  "characteristics": {
+    "monarchism": {
+        "name": "Monarchism",
+        "description":"A monarch ruling the nation",
+        "exclusiveWith":["authoritarianism","republicanism","secularism"]
+    },
+    "constitutionalism": {
+        "name": "Constitutionalism",
+        "description":"The ideology of having a constitution of most basic and protected laws to server as a framework for the nation.",
+        "exclusiveWith":["absolutism"]
+    },
+    "liberalism": {
+        "name":"Liberalism",
+        "description":"Freedom for the basic man",
+        "exclusiveWith":["authoritarianism","absolutism"],
+        "autoSelects":["constitutionalism"]
+    },
+    "absolutism": {
+        "name": "Absolutism",
+        "description": "Absolute control and power, usually by the monarchy or an ultra nationalist goverment.",
+        "exclusiveWith": ["confederation","authoritarianism"],
+        "autoSelects": [],
+        "requiresOne": ["monarchism","nationalism"],
+        "satisfiedByOne": ["monarchism","nationalism"]
+    },
+    "unitarianism": {
+        "name": "Unitarianism",
+        "description": "The government is centralized around one source rather than being divided",
+        "exclusiveWith": ["federalism","confederation","absolutism"]
+    },
+    "federalism": {
+        "name":"Federalism",
+        "description":"The government is divided into multiple levels",
+        "exclusiveWith": ["unitarianism","confederation","absolutism"]
+    },
+    "confederation": {
+        "name":"Confederationalism",
+        "description":"The nation is made up of multiple seprate distinct government united together, often without any form of central governance.",
+        "exclusiveWith": ["federalism","unitarianism","absolutism"]
+    },
+    "authoritarianism": {
+        "name": "Authoritarianism",
+        "description": "The government is not controlled by the people but instead controls the subjects.",
+        "exclusiveWith": []
+    },
+    "company_rule": {
+      "name": "Company Rule",
+      "description": "The aristocracy and industry rule the nation.",
+      "exclusiveWith": ["anarchism","socialism","capitalist"]
+    },
+    "laissez-faire": {
+        "name": "Laissez-faire",
+        "description": "All restrictions on the aristocracy and industry are removed to allow the growth of buissness",
+        "exclusiveWith": ["socialism","social_capitalism","capitalist"]
+    },
+    "capitalist": {
+        "name": "Capitalist",
+        "description": "The free market!",
+        "exclusiveWith": ["socialism","social_capitalism","company_rule","laissez-faire"]
+    },
+    "social_capitalism": {
+        "name": "Social Capitalism",
+        "description": "Capitalism infused with socialist principles, restrictions on the economy to provide the best environment for the people.",
+        "exclusiveWith": ["company_rule","laissez-faire","capitalist","socialism","anarchism"]
+    },
+    "socialism": {
+        "name": "Socialism",
+        "description": "The distribution of wealth and government control of the economy",
+        "exclusiveWith": ["company_rule","laissez-faire","capitalist","social_capitalism","philanthropy"],
+        "autoSelects":["welfare"]
+    },
+    "anarchism": {
+        "name": "Anarchism",
+        "description": "The absolute minimum of government or complete dissolution of it.",
+        "exclusiveWith": ["company_rule","laissez-faire"]
+    },
+    "isolationism":{
+        "name":"Isolationism",
+        "description":"Separate the nation from outsiders and worry only about interal policy."
+    },
+    "protectionism":{
+        "name":"Protectionism",
+        "description":"The most important priority in foreign lands is protecting your interal processes and nothing else."
+    },
+    "conservationist":{
+        "name":"Conservationist",
+        "description":"Focus on conserving the current state of the world."
+    },
+    "imperialism":{
+        "name":"Imperialism",
+        "description":"Exploit the world outside your nation to bring as much benefit as posible to yourself."
+    },
+    "theocratism":{
+        "name":"Theocratism",
+        "description":"The church is superior to the state",
+        "autoSelects":["social_laws"]
+    },
+    "church_integration":{
+        "name":"Church Integration",
+        "description":"The church is integrated into the state but not superior to it"
+    },
+    "non_interference":{
+        "name":"Non Interference",
+        "description":"The state will not interfere with the operations of the church."
+    },
+    "secularism":{
+        "name":"Secularism",
+        "description":"The state is rules the church and is superior to it."
+    },
+    "social_laws":{
+        "name":"Social Laws",
+        "description":"The laws of the state enforce our cultural traditions and treat woman as dependants of their fathers then husbands needing their consent to do anything.",
+        "exclusiveWith":["progressivism","liberalism","conservatism","voting_rights"]
+    },
+    "romanticism":{
+        "name":"Romanticism",
+        "description":"Glorify our culture and history perhaps slightly beyond reality",
+        "exclusiveWith":[]
+    },
+    "conservatism":{
+        "name":"Conservatism",
+        "description":"It is best to conserve what already exists in our society and culture and protect it from change",
+        "exclusiveWith":["progressivism","social_capitalism"]
+    },
+    "progressivism":{
+        "name":"Progressivism",
+        "description":"We must make progress on our existing culture and society to create a better future",
+        "exclusiveWith":["conservatism","social_laws"]
+    },
+    "nationalism":{
+        "name":"Nationalism",
+        "description":"Our people are united into one nation built on our culture and identity",
+        "exclusiveWith":[]
+    },
+    "charitability":{
+        "name":"Philanthropy",
+        "description":"Often private organizations and the church sponsor charitable efforts with minor government support.",
+        "exclusiveWith":["welfare","secularism"]
+    },
+    "welfare":{
+        "name":"Welfare",
+        "description":"The government directly pays for and sponsors programs to help the people.",
+        "exclusiveWith":["charitability","anarchism"]
+    },
+    "republicanism":{
+        "name":"Republicanism",
+        "description":"The government is formed only of the people and their elected bodies, nothing else",
+        "exclusiveWith":["company_rule","anarchism","absolutism","authoritarianism","theocratism","royalism","deference","monarchism"],
+        "autoSelects":["constitutionalism"]
+    },
+    "deference":{
+        "name":"Deference",
+        "description":"The state and the people's power and authority stems from the monarch, therefore they should be respected and their words should be prioritized over overs"
+    },
+    "hostitlity":{
+        "name":"Hostility",
+        "description":"Active and public opposition to the monarchy and its power",
+        "exclusiveWith":["monarchism"]
+    },
+    "equality":{
+        "name":"Equality",
+        "description":"The 'savages' in colonized or unexplored regions are equal but less technologicaly advanced to the people of our nation, therefore they should be left alone."
+    },
+    "polygenism":{
+        "name":"Polygenism",
+        "description":"The separate races of human are of separate descent and species than us, therefore they must be left alone.",
+        "exclusiveWith":["equality","civilizing_duty","mercantilism"]
+    },
+    "anti-colonial":{
+        "name":"Anti-Colonial",
+        "description":"We should stay out of colonial ventures and other imperialist missions",
+        "exclusiveWith":["mercantilism","civilizing_duty","imperialism"]
+    },
+    "civilizing_duty":{
+        "name":"Civilizing Duty",
+        "description":"It is our duty as higher peoples to train the savages of the third world how to properly be civilized.",
+        "exclusiveWith":["anti-colonial","equality"]
+    },
+    "mercantilism":{
+        "name":"Mercantilisim",
+        "description":"We should take advantage of the savages to extract as much profit as possible for ourselves!",
+        "exclusiveWith":["polygenism","anti-colonial","imperialism"]
+    },
+    "segregation":{
+        "name":"Segregation",
+        "description":"Separate minorities from the better civilized people of our nation with as little overlap as possible",
+        "exclusiveWith":["minority_equality","limited_rights","integration","outsider_citizens"],
+        "autoSelects":["lesser_peoples"]
+    },
+    "lesser_peoples":{
+        "name":"Lesser 'peoples'",
+        "description":"Minorities are more akin to animals rather than people like us.",
+        "exclusiveWith":["minority_equality","integration"]
+    },
+    "outsider_citizens":{
+        "name":"Outsider citizens",
+        "description":"Grant minorities citizenship but still exclude them from the rights our people enjoy",
+        "exclusiveWith":["minority_equality","limited_rights","integration","segregation"]
+    },
+    "limited_rights":{
+        "name":"Limited rights",
+        "description":"Grant limited rights to the minorities somewhat similiar to the rights of our people.",
+        "exclusiveWith":["segregation","lesser_peoples","outsider_citizens","minority_integration"]
+    },
+    "minority_equality":{
+        "name":"Equality",
+        "description":"Minorities are part of our people and are equal to them",
+        "exclusiveWith":["segregation","lesser_peoples","outsider_citizens","limited_rights","integration"]
+    },
+    "integration":{
+        "name":"Integration",
+        "description":"Forcefully integrate the minorities into our population by removing their culture and assimilating them into becoming part of our people.",
+        "exclusiveWith":["segregation","lesser_peoples","equality"]
+    },
+    "enforced_patriarchy":{
+        "name":"Enforced Patriarchy",
+        "description":"Our nation must have legal social order protecting the dominance men over woman",
+        "exclusiveWith":["social_restriction","social_laws"]
+    },
+    "social_restriction":{
+        "name":"Social Restriction",
+        "description":"While not legally binding the social order should reflect the dominance of men over woman",
+        "exclusiveWith":["enforced_patriarchy","social_laws"]
+    },
+    "voting_rights":{
+        "name":"Voting Rights",
+        "description":"Woman should have to right to limited voting in elections, perhaps even run for election?"
+    },
+    "minority_yes":{
+        "name":"Yes",
+        "description":"This is a party representing minorities.",
+        "exclusiveWith":["minority_no"],
+        "requiresOne":["minority_velvon","minority_histochea","minority_dacia","minority_fohemia","minority_jhallic"]
+    },
+    "minority_no":{
+        "name":"No",
+        "description":"This party is not primarily for representing a minorities.",
+        "exclusiveWith":["minority_velvon","minority_histochea","minority_dacia","minority_fohemia","minority_jhallic"]
+    },
+    "minority_velvon":{
+        "name":"Velvonee",
+        "description":"Representative of the velvonee people, very high popularity in velvon, none outside of velvon"
+    },
+    "minority_histochea":{
+        "name":"Histotschae",
+        "description":"Representative of the Histochean people, very high popularity in Histochea, none outside of Histochea"
+    },
+    "minority_dacia":{
+        "name":"Dakis",
+        "description":"Representative of the Dacian people, very high popularity in Dacian regions, none outside of Dacia"
+    },
+    "minority_fohemia":{
+        "name":"Fohemijanac",
+        "description":"Representative of the Fohemian people, very high popularity in Fohemia, none outside of Fohemia"
+    },
+    "minority_jhallic":{
+        "name":"Tzalikanoi (Jhallic)",
+        "description":"Representative of the Jhallic people, very high popularity in Jhallica, none outside of Jhallica"
+    },
+    "minority_all":{
+        "name":"All",
+        "description":"No popularity among non minorities, higher popularity in minority regions but not nearly as much as a party specialized to one minority."
+    },
+    "minarchism":{
+        "name":"Minarchism",
+        "description":"The state should be as minimal as possible only existing to protect the people are their rights."
+    }
+  },
+  "combinations": [
+    {
+      "name": "Anarcho-Capitalist",
+      "requires": ["anarchism", "capitalist"]
+    },
+    {
+        "name": "Anarco-Communist",
+        "requires": ["anarchism","socialism"]
+    },
+    {
+        "name": "Absolute Monarchy",
+        "requires": ["absolutism","monarchism"]
+    },
+    {
+        "name":"Crusaderism",
+        "requires":["theocratism","imperialism"]
+    },
+    {
+        "name":"Proto-Fascism",
+        "requires":["absolutism","nationalism"]
+    },
+    {
+        "name":"Liberatarianism",
+        "requires":["minarchism","liberalism"]
+    },
+    {
+        "name":"Democratic Socialism",
+        "requires":["socialism","republicanism"]
+    },
+    {
+        "name":"Democratic Socialism",
+        "requires":["social_capitalism","republicanism"]
+    },
+    {
+        "name":"Racist Anti Colonialism",
+        "requires":["polygenism","anti-colonial"]
+    },
+    {
+        "name":"Equality based Anti Colonialism",
+        "requires":["anti-colonial","equality"]
+    },
+    {
+        "name":"Genocide",
+        "requires":["absolutism","nationalism","segregation","imperialism","polygenism"],
+        "categories":["minority_rights"]
+    }
+  ]
+}

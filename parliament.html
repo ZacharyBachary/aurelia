@@ -5,6 +5,40 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Parliament</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        @media (max-width: 600px) {
+            #parliament-container, #senate-container {
+                transform: scale(0.8);
+                transform-origin: top center;
+            }
+        }
+        .diagram-background {
+            background-color:rgb(53, 48, 48);
+            margin-top:12px;
+            border-radius:10px;
+            height:600px;
+        }
+        @media (max-width: 600px) {
+            .layout-column {
+                width: 520px;
+                overflow: hidden;                
+                display: flex;
+                justify-content: center;
+            }
+            #parliament-container {
+                margin-top:25px;
+            }
+            #senate-container {
+                margin-top: -60px;
+            }
+            .diagram-background {
+                background-color:rgb(53, 48, 48);
+                margin-top:12px;
+                border-radius:10px;
+                height:530px;
+            }    
+        }
+    </style>
 </head>
 <body>
     <div class="year-container">
@@ -32,27 +66,14 @@
             <span style="font-family:Faculty Glyphic">Bailech Legislature - <span id="year"></span></span>
             <div class="layout">
                 <div class="layout-column">
-                    <div style="background-color:rgb(53, 48, 48); margin-top:12px; border-radius:10px; height:600px;">
+                    <div class="diagram-background">
                         <div id="parliament-container"></div>
                         <script type="module" src="scripts/parliament.js"></script>
                         <div id="senate-container" style="transform: scale(0.7); transform-origin: top center;"></div>
                         <script type="module" src="scripts/senate.js"></script>
                     </div>
-                    <div style="width:100%; background-color: #757575; padding: 1px; margin-top:30px;"></div>
-                    <div class="gallery">
-                        <div class="gallery-row">
-                            <img src="images/maps/parliament_0000.png">
-                            <p style="font-size:200%;">Parliament</p>
-                            <p>1800</p>
-                        </div>
-                        <div class="gallery-row">
-                            <img src="images/maps/senate_0000.png">
-                            <p style="font-size:200%;">Senate</p>
-                            <p>1800</p>
-                        </div>
-                    </div>
                 </div>
-                <div id="right-panel" class="element-container" style="width: 30%;">
+                <div id="right-panel" class="element-container">
                     <h1 style="font-family:Faculty Glyphic;">Imperial Parliament</h1>
                     <p style="font-family:Viaoda Libre;">Established: 1747<br>Districts: 391</p>
                     <div class="col-container" style="padding-left: 8px;">
@@ -128,6 +149,21 @@
                     </div></a><br>
                     </div>
                 </div><br>
+                <div class="gallery-wrapper">
+                    <div style="width:100%; background-color: #757575; padding: 1px; margin-top:30px;"></div>
+                    <div class="gallery">
+                        <div class="gallery-row">
+                            <img src="images/maps/parliament_0000.png">
+                            <p style="font-size:200%;">Parliament</p>
+                            <p>1800</p>
+                        </div>
+                        <div class="gallery-row">
+                            <img src="images/maps/senate_0000.png">
+                            <p style="font-size:200%;">Senate</p>
+                            <p>1800</p>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

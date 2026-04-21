@@ -9,7 +9,34 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <style>
-        #map { width: 100%; height: 600px; background: #2a2a2a; border-radius: 8px; }
+        html, body { overflow-x: hidden; }
+        #map { width: 100%; height: 800px; background: #2a2a2a; border-radius: 8px; }
+
+        #province-panel {
+            margin-top: 24px;
+            color: lightgray;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+        #province-panel-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #757575;
+            margin-bottom: 14px;
+        }
+        #province-panel-title {
+            color: lightgray;
+            font-family: 'Faculty Glyphic', serif;
+            font-size: 1.2rem;
+            margin: 0;
+        }
+        .region-flag {
+            float:right;
+            border-radius: 20px;
+            box-shadow:0 0 10px #525252;
+        }
     </style>
 </head>
 <body>
@@ -23,7 +50,7 @@
         <span style="font-size:xx-large; color:rgb(155, 155, 155); margin-left:12px; margin-right:12px;">|</span>
         <span style="font-size:small; color:lightgray; margin-left: 4px; margin-top:4px">Prime Minister,<br>Her Majesty Ashley Moadstein</span>
     </div>
-    <div class="tab-container">
+    <div class="tab-container" style="overflow:auto;">
         <a href="index.html" class="button-link">Home</a>
         <a href="parliament.html" class="button-link">Parliament</a>
         <a href="region-map.html" class="button-link active">The Empire</a>
@@ -37,6 +64,11 @@
         <div class="element-container">
             <span style="font-family:Faculty Glyphic">Regional Map of the Bailech Empire - <span id="year"></span></span>
             <div id="map" style="margin-top:24px;"></div>
+            <br>
+            <div id="province-panel-header">
+                <span id="province-panel-title"></span>
+            </div>
+            <div id="province-panel-content"></div>
         </div>
     </div>
     <div class="footer">
@@ -53,6 +85,51 @@
     const IMG_W = 1087;
     const IMG_H = 1340;
 
+    // Province panel logic
+    const panelTitle  = document.getElementById('province-panel-title');
+    const panelContent = document.getElementById('province-panel-content');
+
+    // Load default description on startup
+    fetch('information/region_map_description.html')
+        .then(r => r.ok ? r.text() : '')
+        .then(html => {
+            panelTitle.textContent = '';
+            panelContent.innerHTML = html;
+        });
+
+    // Human-readable province names keyed by SVG id
+    const PROVINCE_NAMES = {
+        'jhallic':        'Jhallic',
+        'oberhause':      'Oberhause',
+        'bailectein':     'Bailectein',
+        'upper-fohemia':  'Upper Fohemia',
+        'lower-fohemia':  'Lower Fohemia',
+        'velvon':         'Velvon',
+        'molonia':        'Molonia',
+        'upper-dac':      'Upper Dac',
+        'central-dac':    'Central Dac',
+        'artsegrad':      'Artsegrad',
+        'strednistraz':   'Strednistraz',
+        'bailecta':       'Bailecta',
+        'mosle':          'Mosle',
+        'coast':          'The Coast',
+        'ostmark':        'Ostmark',
+        'levaruka':       'Levaruka',
+        'medvele':        'Medvele',
+        'velkdole':       'Velkdole',
+    };
+
+    async function openProvince(id) {
+        panelContent.innerHTML = '<em style="color:#777">Loading...</em>';
+        try {
+            const res = await fetch(`information/provinces/${id}.html`);
+            if (!res.ok) throw new Error('not found');
+            panelContent.innerHTML = await res.text();
+        } catch {
+            panelContent.innerHTML = '<em style="color:#777">No information available for this region.</em>';
+        }
+    }
+
     window.addEventListener('load', () => {
         const map = L.map('map', {
             crs: L.CRS.Simple,
@@ -62,23 +139,97 @@
         });
 
         const bounds = [[0, 0], [IMG_H, IMG_W]];
+        const TEXT_W = 1847;
+        const TEXT_H = 1401;
+        const textOffsetX = (IMG_W - TEXT_W) / 2;
+        const textOffsetY = (IMG_H - TEXT_H) / 2;
+        const boundsText = [[textOffsetY, textOffsetX], [textOffsetY + TEXT_H, textOffsetX + TEXT_W]];
 
         const layerBase    = L.imageOverlay('images/maps/region_map_base.png',    bounds);
         const layerTerrain = L.imageOverlay('images/maps/region_map_terrain.png', bounds);
         const layerDetails = L.imageOverlay('images/maps/region_map_details.png', bounds);
-        const layerText    = L.imageOverlay('images/maps/region_map_text.png',    bounds);
+        const layerText    = L.imageOverlay('images/maps/region_map_text.png',    boundsText);
 
         layerBase.addTo(map);
         layerTerrain.addTo(map);
         layerDetails.addTo(map);
-        layerText.addTo(map);
         map.fitBounds(bounds);
 
         L.control.layers(null, {
-            'Terrain':       layerTerrain,
-            'Cities':       layerDetails,
+            'Terrain':              layerTerrain,
+            'Cities':               layerDetails,
             'Labels & Information': layerText,
         }, { collapsed: false }).addTo(map);
+
+        // SVG collision overlay
+        fetch('images/maps/region_map.svg')
+            .then(r => r.text())
+            .then(svgText => {
+                const parser = new DOMParser();
+                const svgDoc = parser.parseFromString(svgText, 'image/svg+xml');
+                const svgEl  = svgDoc.documentElement;
+
+                // Stretch SVG to fill bounds exactly, no letterboxing
+                svgEl.setAttribute('preserveAspectRatio', 'none');
+
+                // Make the SVG element itself transparent to allow map interaction
+                svgEl.style.pointerEvents = 'none';
+
+                // Hide all non-province elements (background, labels, rivers, etc.)
+                const provinceIdSet = new Set(Object.keys(PROVINCE_NAMES));
+                svgEl.querySelectorAll('image, text, line, rect, circle').forEach(el => {
+                    el.style.display = 'none';
+                });
+                // Hide any path/polygon not belonging to a known province
+                svgEl.querySelectorAll('path, polygon').forEach(el => {
+                    const ownId = el.id ? el.id.replace(/_\d+$/, '') : '';
+                    if (!provinceIdSet.has(el.id) && !provinceIdSet.has(ownId)) {
+                        el.style.display = 'none';
+                    }
+                });
+
+                // Collect all clickable province elements
+                // For groups (central-dac), collect the <g> and its children
+                const provinceIds = Object.keys(PROVINCE_NAMES);
+
+                provinceIds.forEach(id => {
+                    const el = svgEl.querySelector(`#${CSS.escape(id)}`);
+                    if (!el) return;
+
+                    const targets = el.tagName === 'g'
+                        ? Array.from(el.querySelectorAll('polygon, path'))
+                        : [el];
+
+                    targets.forEach(t => {
+                        t.style.fill            = 'transparent';
+                        t.style.stroke          = 'none';
+                        t.style.pointerEvents   = 'all';
+                        t.style.cursor          = 'pointer';
+                        t.style.transition      = 'fill 0.15s ease';
+
+                        t.addEventListener('mouseover', () => {
+                            targets.forEach(s => s.style.fill = 'rgba(255,255,255,0.15)');
+                        });
+                        t.addEventListener('mouseout', () => {
+                            targets.forEach(s => s.style.fill = 'transparent');
+                        });
+                        t.addEventListener('click', (e) => {
+                            L.DomEvent.stopPropagation(e);
+                            openProvince(id);
+                        });
+                    });
+                });
+
+                // Create a temporary container to hold the SVG for L.svgOverlay
+                const container = document.createElement('div');
+                container.appendChild(svgEl);
+
+                // Tune SVG_W to widen/narrow and SVG_X to shift left/right (negative = left)
+                const SVG_W = 1327; // <-- increase to stretch wider
+                const SVG_X = -121; // <-- decrease (more negative) to shift left
+                const svgBounds = [[0, SVG_X], [IMG_H, SVG_X + SVG_W]];
+                L.svgOverlay(svgEl, svgBounds, { interactive: true }).addTo(map);
+            });
     });
 </script>
 </html>
