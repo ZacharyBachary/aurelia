@@ -5,7 +5,7 @@
         "name": "Economy",
         "min": 1,
         "max": 2,
-        "characteristics": ["company_rule", "laissez-faire", "capitalist","social_capitalism","socialism","anarchism"]
+        "characteristics": ["company_rule", "laissez-faire", "capitalist","social_capitalism","socialism","communism","anarchism"]
     },
     {
         "id": "structure",
@@ -47,14 +47,7 @@
         "name":"Tradition",
         "min":1,
         "max":3,
-        "characteristics":["social_laws","romanticism","conservatism","liberalism","progressivism"]
-    },
-    {
-        "id":"social",
-        "name":"Social",
-        "min":1,
-        "max":2,
-        "characteristics":["nationalism","conservatism","charitability","welfare"]
+        "characteristics":["social_laws","romanticism","conservatism", "nationalism", "liberalism","progressivism"]
     },
     {
         "id":"monarch",
@@ -82,7 +75,7 @@
         "name":"Womans Rights",
         "min":1,
         "max":2,
-        "characteristics":["social_laws","enforced_patriarchy","social_restriction","voting_rights"]
+        "characteristics":["social_laws","enforced_patriarchy","social_restriction","voting_rights","woman_equality"]
     },
     {
         "id":"minority",
@@ -395,6 +388,17 @@
         "name":"Abolishment",
         "description":"The monarchy must be abolished.",
         "exclusiveWith":["monarchism"]
+    },
+    "woman_equality":{
+        "name":"Equality",
+        "description":"Woman are equal to men.",
+        "exclusiveWith":["social_restriction","enforced_patriarchy","social_laws"],
+        "autoSelects":["voting_rights"]
+    },
+    "communism":{
+        "name":"Communism",
+        "description":"The workers fully seize the means of the production and wealth is distributed by need to all people in the nation.",
+        "exclusiveWith":["company_rule","laissez-faire","capitalist","social_capitalism","socialism"]
     }
   },
   "combinations": [
