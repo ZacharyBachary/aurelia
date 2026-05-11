@@ -22,11 +22,18 @@
         "characteristics": ["absolutism","authoritarianism","monarchism","constitutionalism","liberalism","republicanism"]
     },
     {
+        "id":"democratic_ideals",
+        "name": "Democratic Ideals",
+        "min":1,
+        "max":3,
+        "characteristics":["royalism","authoritarianism","free_speech","free_association","oligarchy","democracy"]
+    },
+    {
         "id":"foreign_policy",
         "name":"Foreign Policy",
         "min":1,
-        "max":1,
-        "characteristics": ["isolationism","protectionism","conservationist","imperialism"]
+        "max":2,
+        "characteristics": ["isolationism","protectionism","conservationist","imperialism","ideo_spread"]
     },
     {
         "id":"religion",
@@ -54,7 +61,7 @@
         "name":"Monarchism",
         "min":1,
         "max":1,
-        "characteristics":["absolutism","royalism","deference","respect_tradition","hostitlity","republicanism"]
+        "characteristics":["absolutism","royalism","deference","respect_tradition","hostitlity","abolishment"]
     },
     {
         "id":"colonialism",
@@ -128,7 +135,7 @@
     "authoritarianism": {
         "name": "Authoritarianism",
         "description": "The government is not controlled by the people but instead controls the subjects.",
-        "exclusiveWith": []
+        "exclusiveWith": ["free_association","democracy"]
     },
     "company_rule": {
       "name": "Company Rule",
@@ -159,23 +166,28 @@
     "anarchism": {
         "name": "Anarchism",
         "description": "The absolute minimum of government or complete dissolution of it.",
-        "exclusiveWith": ["company_rule","laissez-faire"]
+        "exclusiveWith": ["company_rule","laissez-faire"],
+        "autoSelects":["minarchism"]
     },
     "isolationism":{
         "name":"Isolationism",
-        "description":"Separate the nation from outsiders and worry only about interal policy."
+        "description":"Separate the nation from outsiders and worry only about interal policy.",
+        "exclusiveWith":["protectionism","conservationist","imperialism"]
     },
     "protectionism":{
         "name":"Protectionism",
-        "description":"The most important priority in foreign lands is protecting your interal processes and nothing else."
+        "description":"The most important priority in foreign lands is protecting your interal processes and nothing else.",
+        "exclusiveWith":["protectionism","conservationist","imperialism"]
     },
     "conservationist":{
         "name":"Conservationist",
-        "description":"Focus on conserving the current state of the world."
+        "description":"Focus on conserving the current state of the world.",
+        "exclusiveWith":["protectionism","conservationist","imperialism"]
     },
     "imperialism":{
         "name":"Imperialism",
-        "description":"Exploit the world outside your nation to bring as much benefit as posible to yourself."
+        "description":"Exploit the world outside your nation to bring as much benefit as posible to yourself.",
+        "exclusiveWith":["protectionism","conservationist","imperialism"]
     },
     "theocratism":{
         "name":"Theocratism",
@@ -350,7 +362,39 @@
     },
     "minarchism":{
         "name":"Minarchism",
-        "description":"The state should be as minimal as possible only existing to protect the people are their rights."
+        "description":"The state should be as minimal as possible only existing to protect the people are their rights.",
+        "exclusiveWith":["federalism","unitarianism","absolutism"]
+    },
+    "ideo_spread":{
+        "name":"Ideological Spread",
+        "description":"We should to the best of our ability fight to spread our ideology."
+    },
+    "royalism":{
+        "name":"Royalism",
+        "description":"The belief that the authority of the state comes strictly from the authority of the Monarchy.",
+        "exclusiveWith":["democracy","oligarchy"]
+    },
+    "free_speech":{
+        "name":"Free speech",
+        "description":"The people and the press should have the right to say whatever they wish without restriction."
+    },
+    "free_association":{
+        "name":"Free association",
+        "description":"The people should have the right to congregate together and assemble it lawful manners."
+    },
+    "oligarchy":{
+        "name":"Oligarchy",
+        "description":"Democracy and power should exist for the rich, powerful, and educated only.",
+        "exclusiveWith":["democracy"]
+    },
+    "democracy":{
+        "name":"Democracy",
+        "description":"The common people of our nation should have the right to democratically elect the government."
+    },
+    "abolishment":{
+        "name":"Abolishment",
+        "description":"The monarchy must be abolished.",
+        "exclusiveWith":["monarchism"]
     }
   },
   "combinations": [
@@ -398,6 +442,10 @@
         "name":"Genocide",
         "requires":["absolutism","nationalism","segregation","imperialism","polygenism"],
         "categories":["minority_rights"]
+    },
+    {
+        "name":"Councilership",
+        "requires":["confederation","minarchism"]
     }
   ]
 }

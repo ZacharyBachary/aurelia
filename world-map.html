@@ -5,6 +5,43 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>World Map</title>
     <link rel="stylesheet" href="style.css">
+    <!-- Leaflet -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <style>
+        html, body { overflow-x: hidden; }
+        #map { width: 100%; height: 800px; background: #2a2a2a; border-radius: 8px; }
+
+        #province-panel {
+            margin-top: 24px;
+            color: lightgray;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+        #province-panel-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #757575;
+            margin-bottom: 14px;
+        }
+        #province-panel-title {
+            color: lightgray;
+            font-family: 'Faculty Glyphic', serif;
+            font-size: 1.2rem;
+            margin: 0;
+        }
+        .region-flag {
+            float:right;
+            border-radius: 20px;
+            box-shadow:0 0 10px #525252;
+        }
+        .world-map-text-layer img {
+            image-rendering: crisp-edges;
+            image-rendering: -webkit-optimize-contrast;
+        }
+    </style>
 </head>
 <body>
     <div class="year-container">
@@ -17,7 +54,7 @@
         <span style="font-size:xx-large; color:rgb(155, 155, 155); margin-left:12px; margin-right:12px;">|</span>
         <span style="font-size:small; color:lightgray; margin-left: 4px; margin-top:4px">Prime Minister,<br>Her Majesty Ashley Moadstein</span>
     </div>
-    <div class="tab-container">
+    <div class="tab-container" style="overflow:auto;">
         <a href="index.html" class="button-link">Home</a>
         <a href="parliament.html" class="button-link">Parliament</a>
         <a href="region-map.html" class="button-link">The Empire</a>
@@ -27,8 +64,16 @@
         <a href="world-map.html" class="button-link active">World Map</a>
     </div>
     <div class="bailech-pattern"></div>
-    <div class="page">
-        world map
+    <div class="page" style="max-width: 1600px;">
+        <div class="element-container">
+            <span style="font-family:Faculty Glyphic">Map of the World - <span id="year"></span></span>
+            <div id="map" style="margin-top:24px;"></div>
+            <br>
+            <div id="province-panel-header">
+                <span id="province-panel-title"></span>
+            </div>
+            <div id="province-panel-content"></div>
+        </div>
     </div>
     <div class="footer">
     </div>
@@ -40,5 +85,138 @@
 
     const turnElements = document.querySelectorAll('#turn');
     turnElements.forEach(el => el.textContent = gameDetails.turn);
+
+    const IMG_W = 12763;
+    const IMG_H = 6899;
+
+    // Province panel logic
+    const panelTitle  = document.getElementById('province-panel-title');
+    const panelContent = document.getElementById('province-panel-content');
+
+    // Load default description on startup
+    fetch('information/world_map_description.html')
+        .then(r => r.ok ? r.text() : '')
+        .then(html => {
+            panelTitle.textContent = '';
+            panelContent.innerHTML = html;
+        });
+
+    // Nation names keyed by SVG id
+    const NATION_NAMES = {
+        // Add nations here, e.g. 'nation-id': 'Nation Name',
+    };
+
+    async function openNation(id) {
+        panelContent.innerHTML = '<em style="color:#777">Loading...</em>';
+        try {
+            const res = await fetch(`information/nations/${id}.html`);
+            if (!res.ok) throw new Error('not found');
+            panelContent.innerHTML = await res.text();
+        } catch {
+            panelContent.innerHTML = '<em style="color:#777">No information available for this nation.</em>';
+        }
+    }
+
+    window.addEventListener('load', () => {
+        const map = L.map('map', {
+            crs: L.CRS.Simple,
+            minZoom: -4,
+            maxZoom:  4,
+            zoomSnap: 0.25,
+        });
+
+        const bounds = [[0, 0], [IMG_H, IMG_W]];
+        const TEXT_W = 12763;
+        const TEXT_H = 6899;
+        const textOffsetX = (IMG_W - TEXT_W) / 2;
+        const textOffsetY = (IMG_H - TEXT_H) / 2;
+        const boundsText = [[textOffsetY, textOffsetX], [textOffsetY + TEXT_H, textOffsetX + TEXT_W]];
+
+        const layerBase    = L.imageOverlay('images/maps/world_map_base.png',    bounds);
+        const layerTerrain = L.imageOverlay('images/maps/world_map_terrain.png', bounds);
+        const layerDetails = L.imageOverlay('images/maps/world_map_cities.png', bounds);
+        const layerRiver   = L.imageOverlay('images/maps/world_map_river.png',   bounds);
+        const layerText    = L.imageOverlay('images/maps/world_map_text.png',    bounds, { className: 'world-map-text-layer' });
+
+        layerBase.addTo(map);
+        layerTerrain.addTo(map);
+        layerDetails.addTo(map);
+        map.fitBounds(bounds);
+
+        L.control.layers(null, {
+            'Terrain':              layerTerrain,
+            'Cities':               layerDetails,
+            'Labels & Information': layerText,
+        }, { collapsed: false }).addTo(map);
+
+        // SVG collision overlay
+        fetch('images/maps/region_map.svg')
+            .then(r => r.text())
+            .then(svgText => {
+                const parser = new DOMParser();
+                const svgDoc = parser.parseFromString(svgText, 'image/svg+xml');
+                const svgEl  = svgDoc.documentElement;
+
+                // Stretch SVG to fill bounds exactly, no letterboxing
+                svgEl.setAttribute('preserveAspectRatio', 'none');
+
+                // Make the SVG element itself transparent to allow map interaction
+                svgEl.style.pointerEvents = 'none';
+
+                // Hide all non-nation elements (background, labels, rivers, etc.)
+                const nationIdSet = new Set(Object.keys(NATION_NAMES));
+                svgEl.querySelectorAll('image, text, line, rect, circle').forEach(el => {
+                    el.style.display = 'none';
+                });
+                // Hide any path/polygon not belonging to a known nation
+                svgEl.querySelectorAll('path, polygon').forEach(el => {
+                    const ownId = el.id ? el.id.replace(/_\d+$/, '') : '';
+                    if (!nationIdSet.has(el.id) && !nationIdSet.has(ownId)) {
+                        el.style.display = 'none';
+                    }
+                });
+
+                // Collect all clickable nation elements
+                const nationIds = Object.keys(NATION_NAMES);
+
+                nationIds.forEach(id => {
+                    const el = svgEl.querySelector(`#${CSS.escape(id)}`);
+                    if (!el) return;
+
+                    const targets = el.tagName === 'g'
+                        ? Array.from(el.querySelectorAll('polygon, path'))
+                        : [el];
+
+                    targets.forEach(t => {
+                        t.style.fill            = 'transparent';
+                        t.style.stroke          = 'none';
+                        t.style.pointerEvents   = 'all';
+                        t.style.cursor          = 'pointer';
+                        t.style.transition      = 'fill 0.15s ease';
+
+                        t.addEventListener('mouseover', () => {
+                            targets.forEach(s => s.style.fill = 'rgba(255,255,255,0.15)');
+                        });
+                        t.addEventListener('mouseout', () => {
+                            targets.forEach(s => s.style.fill = 'transparent');
+                        });
+                        t.addEventListener('click', (e) => {
+                            L.DomEvent.stopPropagation(e);
+                            openNation(id);
+                        });
+                    });
+                });
+
+                // Create a temporary container to hold the SVG for L.svgOverlay
+                const container = document.createElement('div');
+                container.appendChild(svgEl);
+
+                // Tune SVG_W to widen/narrow and SVG_X to shift left/right (negative = left)
+                const SVG_W = 1327; // <-- increase to stretch wider
+                const SVG_X = -121; // <-- decrease (more negative) to shift left
+                const svgBounds = [[0, SVG_X], [IMG_H, SVG_X + SVG_W]];
+                L.svgOverlay(svgEl, svgBounds, { interactive: true }).addTo(map);
+            });
+    });
 </script>
 </html>
