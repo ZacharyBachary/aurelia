@@ -27,6 +27,7 @@ body {
     background-attachment: fixed;
     display: flex;
     flex-direction: column;
+    overflow-x: hidden;
 }
 .page {
     max-width: 1000px;
@@ -183,18 +184,15 @@ body {
 }
 
 .layout {
-    display: grid;
-    grid-template-columns: 1fr 30%;
-    grid-template-rows: min-content min-content;
-    grid-template-areas:
-        "diagram panel"
-        "gallery panel";
+    display: flex;
     gap: 15px;
     margin-top: 12px;
+    align-items: flex-start;
 }
-.layout-column { grid-area: diagram; align-self: start; }
-#right-panel { grid-area: panel; width: auto !important; align-self: start; }
-.gallery-wrapper { grid-area: gallery; }
+.layout-left { display: flex; flex-direction: column; flex: 1; gap: 15px; }
+.layout-column { align-self: start; }
+#right-panel { width: 30% !important; flex-shrink: 0; align-self: start; }
+.gallery-wrapper { }
 
 .party-icon {
     width: 30px;
@@ -230,11 +228,11 @@ body {
     gap: 12px;
     width:100%;
     margin: 0 auto;
-    margin-top:30px;
+    margin-top:10px;
 }
 .gallery img {
     max-width: 500px;
-    max-height: 300px;
+    max-height: 254px;
 }
 .gallery-row {
     flex:1;

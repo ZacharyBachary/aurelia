@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elections</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .region-flag {
+            border-radius: 10px;
+            box-shadow:0 0 10px #525252;
+            margin-bottom:7px;
+        }
+    </style>
+</head>
+<body>
+    <div class="year-container">
+        <span style="font-size:xx-large; color:lightgray; margin-left: 7px;"><span id="year"></span></span>
+        <span style="font-size:large; color:rgb(167, 167, 167); margin-left: 4px; margin-top: 10px;"><span id="turn"></span></span>
+        <span style="font-size:xx-large; color:rgb(155, 155, 155); margin-left:12px; margin-right:12px;">|</span>
+        <span style="font-size:large; color:rgb(167, 167, 167); margin-left: 4px; margin-top: 4px;">👑</span>
+        <span style="font-size:xx-large; color:rgb(155, 155, 155); margin-left:12px; margin-right:12px;">|</span>
+        <span style="font-size:small; color:lightgray; margin-left: 4px; margin-top:4px">Emperor, Karl IV<br>Empress, Ashley</span>
+        <span style="font-size:xx-large; color:rgb(155, 155, 155); margin-left:12px; margin-right:12px;">|</span>
+        <span style="font-size:small; color:lightgray; margin-left: 4px; margin-top:4px">Prime Minister,<br>Her Majesty Ashley Moadstein</span>
+    </div>
+    <div class="tab-container">
+        <a href="index.html" class="button-link">Home</a>
+        <a href="parliament.html" class="button-link">Parliament</a>
+        <a href="region-map.html" class="button-link">The Empire</a>
+        <a href="elections.html" class="button-link">Elections</a>
+        <a href="parties.html" class="button-link">Parties</a>
+        <a href="royal-tree.html" class="button-link">Royal Family</a>
+        <a href="world-map.html" class="button-link">World Map</a>
+        <a href="unrest.html" class="button-link active">Unrest</a>
+    </div>
+    <div class="bailech-pattern"></div>
+    <div class="page" style="width:100%">
+        <div class="element-container">
+            Here the unrest of every minority of the country is displayed
+        <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap: 12px; padding: 12px;">
+            <div class="element-container">
+                <div style="text-align: center;">
+                    <img src="images/flags/regions/bailech_flag.png" class="region-flag" style="width:100%; height:50px;">
+                    <p style="font-size:xx-large; font-family: Faculty Glyphic;">Bailechs</p>
+                    <div style="padding:1px; border-bottom: solid 2px #757575; margin-bottom: 8px;"></div>
+                </div>
+                <div style="margin-left:14px; font-family:'Viaoda Libre';">
+                    <li><b>Population</b>: alot</li>
+                    <li><b>Dominant regions</b>: Bailecta, Bailectein, Oberhause, Ostmark</li>
+                    <li><b>Minority regions</b>: Central Dac, Upper Dac, Molonia, Jhallic Refuge</li>
+                    <li><b>Unrest Level:</b> 7 - Satisfaction</li>
+                </div>
+            </div>
+            <div class="element-container">
+                <div style="text-align: center;">
+                    <img src="images/flags/regions/histochea_flag.png" class="region-flag" style="width:100%; height:50px;">
+                    <p style="font-size:xx-large; font-family: Faculty Glyphic;">Histocheans</p>
+                    <div style="padding:1px; border-bottom: solid 2px #757575; margin-bottom: 8px;"></div>
+                </div>
+                <div style="margin-left:14px; font-family:'Viaoda Libre';">
+                    <li><b>Population</b>: alot</li>
+                    <li><b>Dominant regions</b>: Velkdole, Artsegrad, Mosle, Ploneia, Strednistraz, Medvele, Levaruka</li>
+                    <li><b>Minority regions</b>: None</li>
+                    <li><b>Unrest Level:</b> 4-5 - Mass/Mild Discontent</li>
+                </div>
+            </div>
+            <div class="element-container">
+                <div style="text-align: center;">
+                    <img src="images/flags/regions/dac_flag.png" class="region-flag" style="width:100%; height:50px;">
+                    <p style="font-size:xx-large; font-family: Faculty Glyphic;">Dacians</p>
+                    <div style="padding:1px; border-bottom: solid 2px #757575; margin-bottom: 8px;"></div>
+                </div>
+                <div style="margin-left:14px; font-family:'Viaoda Libre';">
+                    <li><b>Population</b>: small</li>
+                    <li><b>Dominant regions</b>: Central Dac, Upper Dac</li>
+                    <li><b>Minority regions</b>: None</li>
+                    <li><b>Unrest Level:</b> 6 - Indifference</li>
+                </div>
+            </div>
+            <div class="element-container">
+                <div style="text-align: center;">
+                    <img src="images/flags/regions/fohemia_flag.png" class="region-flag" style="width:100%; height:50px;">
+                    <p style="font-size:xx-large; font-family: Faculty Glyphic;">Fohemians</p>
+                    <div style="padding:1px; border-bottom: solid 2px #757575; margin-bottom: 8px;"></div>
+                </div>
+                <div style="margin-left:14px; font-family:'Viaoda Libre';">
+                    <li><b>Population</b>: medium</li>
+                    <li><b>Dominant regions</b>: Upper Fohemia, Lower Fohemia</li>
+                    <li><b>Minority regions</b>: Velkdole</li>
+                    <li><b>Unrest Level:</b> 5 - Mild Discontent</li>
+                </div>
+            </div>
+            <div class="element-container">
+                <div style="text-align: center;">
+                    <img src="images/flags/regions/jhallic_flag.png" class="region-flag" style="width:100%; height:50px;">
+                    <p style="font-size:xx-large; font-family: Faculty Glyphic;">Jhallicans</p>
+                    <div style="padding:1px; border-bottom: solid 2px #757575; margin-bottom: 8px;"></div>
+                </div>
+                <div style="margin-left:14px; font-family:'Viaoda Libre';">
+                    <li><b>Population</b>: small</li>
+                    <li><b>Dominant regions</b>: Jhallic Refuge</li>
+                    <li><b>Minority regions</b>: None</li>
+                    <li><b>Unrest Level:</b> 6 - Indifference</li>
+                </div>
+            </div>
+            <div class="element-container">
+                <div style="text-align: center;">
+                    <img src="images/flags/regions/velvon_flag2.png" class="region-flag" style="width:100%; height:50px;">
+                    <p style="font-size:xx-large; font-family: Faculty Glyphic;">Velvonee</p>
+                    <div style="padding:1px; border-bottom: solid 2px #757575; margin-bottom: 8px;"></div>
+                </div>
+                <div style="margin-left:14px; font-family:'Viaoda Libre';">
+                    <li><b>Population</b>: medium</li>
+                    <li><b>Dominant regions</b>: Velvon</li>
+                    <li><b>Minority regions</b>: None</li>
+                    <li><b>Unrest Level:</b> 7 - Satisfaction</li>
+                </div>
+            </div>
+        </div>
+        </div>
+    </div>
+    <div class="footer">
+    </div>
+</body>
+<script type="module">
+    import { gameDetails } from './scripts/game_details.js';
+    const yearElements = document.querySelectorAll('#year');
+    yearElements.forEach(el => el.textContent = gameDetails.year);
+
+    const turnElements = document.querySelectorAll('#turn');
+    turnElements.forEach(el => el.textContent = gameDetails.turn);
+</script>
+</html>

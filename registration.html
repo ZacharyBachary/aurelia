@@ -55,6 +55,14 @@
         .chip.chip-selected:hover {
             background-color: rgb(75, 108, 140);
         }
+        .chip.chip-principal {
+            background-color: rgb(115, 85, 10);
+            border-color: rgb(230, 175, 50);
+            color: rgb(255, 230, 140);
+        }
+        .chip.chip-principal:hover {
+            background-color: rgb(140, 105, 20);
+        }
         .chip.chip-excluded {
             opacity: 0.32;
             cursor: not-allowed;
@@ -390,6 +398,7 @@
         <a href="parties.html" class="button-link">Parties</a>
         <a href="royal-tree.html" class="button-link">Royal Family</a>
         <a href="world-map.html" class="button-link">World Map</a>
+        <a href="unrest.html" class="button-link">Unrest</a>
         <a href="registration.html" class="button-link active">Registration</a>
     </div>
     <div class="bailech-pattern"></div>
@@ -465,6 +474,7 @@
 
     // --- State ---
     const selectedGlobal = new Set();            // Set<charId> — all currently selected IDs
+    const principalSelected = new Set();         // Set<charId> — IDs marked as principal (double-clicked)
     const autoSelectedGlobal = new Map();        // Map<triggerId, Set<charId>> — IDs added automatically by a trigger
     const categorySelections = new Map();        // Map<catId, Set<charId>>
     categories.forEach(cat => categorySelections.set(cat.id, new Set()));
@@ -520,6 +530,7 @@
             }
             if (!keptByOther) {
                 selectedGlobal.delete(autoId);
+                principalSelected.delete(autoId);
                 for (const catSel of categorySelections.values()) catSel.delete(autoId);
             }
         }
@@ -629,13 +640,15 @@
 
                 const isSelected    = catSel.has(charId);
                 const isAuto        = isSelected && autoSelected.has(charId);
+                const isPrincipal   = isSelected && !isAuto && principalSelected.has(charId);
                 const isExcluded    = excluded.has(charId) && !isSelected;
                 const isAtLimit     = atMax && !isSelected && !isExcluded;
                 const isRequiredOpt = pending && pending.options.has(charId) && !isSelected && !isExcluded;
                 // Locked by a pending requirement: chip is not one of the allowed options and not already selected
                 const isPendingLocked = pending && !isSelected && !isRequiredOpt;
 
-                chip.classList.toggle('chip-selected',      isSelected && !isAuto);
+                chip.classList.toggle('chip-principal',     isPrincipal);
+                chip.classList.toggle('chip-selected',      isSelected && !isAuto && !isPrincipal);
                 chip.classList.toggle('chip-auto-selected', isAuto);
                 chip.classList.toggle('chip-required',      isRequiredOpt);
                 chip.classList.toggle('chip-excluded',      isExcluded && !isRequiredOpt && !isPendingLocked);
@@ -666,7 +679,15 @@
         if (autoSelected.has(charId)) return;
 
         if (catSel.has(charId)) {
-            // Deselect — remove from ALL categories that contain this char
+            if (!principalSelected.has(charId)) {
+                // Second click: promote to principal
+                principalSelected.add(charId);
+                updateAllChipStates();
+                updateSummaryPanel();
+                return;
+            }
+            // Third click: deselect entirely
+            principalSelected.delete(charId);
             removeAutoSelects(charId);
             for (const c of categories) {
                 if (c.characteristics.includes(charId)) {
@@ -686,6 +707,7 @@
                 // and sync that removal to every other category containing the same char.
                 for (const prev of [...catSel]) {
                     removeAutoSelects(prev);
+                    principalSelected.delete(prev);
                     selectedGlobal.delete(prev);
                     for (const c of categories) {
                         if (c.characteristics.includes(prev)) {
@@ -708,6 +730,7 @@
                     // Radio: displace the current occupant in the other category
                     for (const prev of [...cs]) {
                         removeAutoSelects(prev);
+                        principalSelected.delete(prev);
                         cs.delete(prev);
                         selectedGlobal.delete(prev);
                     }
@@ -759,7 +782,7 @@
             // List remaining (non-combo) selected chars
             for (const charId of remaining) {
                 const char = characteristics[charId];
-                if (char) entries.push({ label: char.name, isCombo: false });
+                if (char) entries.push({ label: char.name, isCombo: false, isPrincipal: principalSelected.has(charId) });
             }
 
             if (entries.length) rows.push({ catName: cat.name, entries });
@@ -782,7 +805,8 @@
             for (const entry of row.entries) {
                 const entryEl = document.createElement('div');
                 entryEl.className = 'reg-summary-entry' + (entry.isCombo ? ' is-combo' : '');
-                entryEl.textContent = entry.label;
+                entryEl.textContent = entry.isPrincipal ? '★ ' + entry.label : entry.label;
+                if (entry.isPrincipal) entryEl.style.color = 'rgb(255, 220, 130)';
                 catDiv.appendChild(entryEl);
             }
 
@@ -926,6 +950,13 @@
             return;
         }
 
+        // Check exactly 4 principal characteristics
+        if (principalSelected.size !== 4) {
+            banner.textContent = `Please mark exactly 4 principal characteristics (click a selected chip again to mark it as principal). Currently: ${principalSelected.size}/4.`;
+            banner.classList.add('error');
+            return;
+        }
+
         // Build Discord-formatted text
         let lines = [];
         lines.push(`# **${name}** - **${abbr}**`);
@@ -938,7 +969,10 @@
         lines.push('## Characteristics');
         for (const cat of categories) {
             const sel = categorySelections.get(cat.id);
-            const names = [...sel].map(id => characteristics[id]?.name ?? id).join(', ');
+            const names = [...sel].map(id => {
+                const name = characteristics[id]?.name ?? id;
+                return principalSelected.has(id) ? `__${name}__` : name;
+            }).join(', ');
             lines.push(`- **${cat.name}**: *${names}*`);
         }
 
